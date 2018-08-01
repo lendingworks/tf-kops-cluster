@@ -28,6 +28,8 @@ variable "sg_allow_http_s" {}
 # ID of internet gateway for the VPC
 variable "internet_gateway_id" {}
 
+variable "aws_profile" {}
+
 # A list of CIDR subnet blocks to use for Kubernetes public subnets. Should be 1 per AZ.
 variable "public_subnet_cidr_blocks" {
   type = "list"
