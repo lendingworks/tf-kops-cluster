@@ -78,7 +78,7 @@ variable "max_price_spot" {
 
 # Kubernetes version tag to use
 variable "kubernetes_version" {
-  default = "1.8.4"
+  default = "1.9.8"
 }
 
 # List of private subnet IDs. Pass 1 per AZ or if left blank then public subnets will be used
