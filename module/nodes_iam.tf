@@ -9,11 +9,14 @@ resource "aws_iam_role" "nodes" {
 }
 
 data "aws_iam_policy_document" "assume_role_policy_nodes" {
-  // Allows the use of kube2iam or kiam.
   statement {
-    effect    = "Allow"
-    actions   = ["sts:AssumeRole"]
-    resources = ["*"]
+    effect  = "Allow"
+    actions = ["sts:AssumeRole"]
+
+    principals {
+      type        = "Service"
+      identifiers = ["ec2.amazonaws.com"]
+    }
   }
 }
 
@@ -85,6 +88,14 @@ data "aws_iam_policy_document" "nodes" {
       "ecr:BatchGetImage",
     ]
 
+    resources = ["*"]
+  }
+
+  // Allows the use of kube2iam or kiam.
+  statement {
+    sid       = "kopsK8sKIAM"
+    effect    = "Allow"
+    actions   = ["sts:AssumeRole"]
     resources = ["*"]
   }
 }
