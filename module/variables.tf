@@ -43,32 +43,32 @@ variable "force_single_master" {
 
 # Instance type for the master
 variable "master_instance_type" {
-  default = "m4.medium"
+  default = "m3.medium"
 }
 
 # Instance type for nodes
 variable "node_instance_type" {
-  default = "c4.xlarge"
+  default = "t2.medium"
 }
 
 # Spot node instance type
 variable "spot_node_instance_type" {
-  default = "c4.large"
+  default = "t2.medium"
 }
 
 # Node autoscaling group min
 variable "node_asg_min" {
-  default = 3
+  default = 2
 }
 
 # Node autoscaling group desired
 variable "node_asg_desired" {
-  default = 3
+  default = 2
 }
 
 # Node autoscaling group max
 variable "node_asg_max" {
-  default = 3
+  default = 2
 }
 
 # Spot instance price, default is null
