@@ -26,7 +26,7 @@ resource "aws_autoscaling_group" "node" {
 
   tag = {
     key                 = "Name"
-    value               = "${var.cluster_name}_node"
+    value               = "k8s_${var.cluster_name}_node"
     propagate_at_launch = true
   }
 
@@ -44,7 +44,7 @@ resource "aws_autoscaling_group" "node" {
 }
 
 resource "aws_launch_configuration" "node" {
-  name_prefix          = "${var.cluster_name}-node"
+  name_prefix          = "k8s-${var.cluster_name}-node-"
   image_id             = "${aws_ami_copy.k8s-ami.id}"
   instance_type        = "${var.node_instance_type}"
   key_name             = "${var.instance_key_name}"
@@ -68,13 +68,13 @@ resource "aws_launch_configuration" "node" {
 }
 
 resource "aws_security_group" "node" {
-  name        = "${var.cluster_name}-node"
+  name        = "k8s-${var.cluster_name}-node"
   vpc_id      = "${var.vpc_id}"
   description = "Kubernetes cluster ${var.cluster_name} nodes"
 
   tags = {
     KubernetesCluster = "${local.cluster_fqdn}"
-    Name              = "${var.cluster_name}_node"
+    Name              = "k8s_${var.cluster_name}_node"
   }
 
   egress {
@@ -90,7 +90,7 @@ resource "aws_autoscaling_group" "node_spot" {
   count = "${var.max_price_spot != "" ? 1 : 0}"
 
   depends_on           = ["null_resource.create_cluster"]
-  name                 = "${var.cluster_name}_node_spot"
+  name                 = "k8s_${var.cluster_name}_node_spot"
   launch_configuration = "${aws_launch_configuration.node_spot.id}"
   max_size             = "${var.node_asg_max}"
   min_size             = "${var.node_asg_min}"
@@ -115,7 +115,7 @@ resource "aws_autoscaling_group" "node_spot" {
 
   tag = {
     key                 = "Name"
-    value               = "${var.cluster_name}_node"
+    value               = "k8s-${var.cluster_name}-node"
     propagate_at_launch = true
   }
 
@@ -135,7 +135,7 @@ resource "aws_autoscaling_group" "node_spot" {
 resource "aws_launch_configuration" "node_spot" {
   count = "${var.max_price_spot != "" ? 1 : 0}"
 
-  name_prefix          = "${var.cluster_name}-node-spot"
+  name_prefix          = "k8s-${var.cluster_name}-node-spot-"
   image_id             = "${aws_ami_copy.k8s-ami.id}"
   instance_type        = "${var.spot_node_instance_type}"
   key_name             = "${var.instance_key_name}"
