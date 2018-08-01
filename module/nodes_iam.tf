@@ -18,6 +18,13 @@ data "aws_iam_policy_document" "assume_role_policy_nodes" {
       identifiers = ["ec2.amazonaws.com"]
     }
   }
+
+  // Allows the use of kube2iam or kiam.
+  statement {
+    effect    = "Allow"
+    actions   = ["sts:AssumeRole"]
+    resources = "*"
+  }
 }
 
 resource "aws_iam_policy_attachment" "nodes" {
