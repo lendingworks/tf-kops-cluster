@@ -23,7 +23,7 @@ data "aws_iam_policy_document" "assume_role_policy_nodes" {
   statement {
     effect    = "Allow"
     actions   = ["sts:AssumeRole"]
-    resources = "*"
+    resources = ["*"]
   }
 }
 
