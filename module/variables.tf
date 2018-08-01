@@ -37,7 +37,7 @@ variable "public_subnet_cidr_blocks" {
 
 # Use encryption for all volumes.
 variable "use_encryption" {
-  default = true
+  default = false
 }
 
 # Force single master. Can be used when a master per AZ is not required or if running
