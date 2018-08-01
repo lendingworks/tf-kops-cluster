@@ -119,7 +119,7 @@ resource "aws_security_group" "master_elb" {
 resource "aws_launch_configuration" "master" {
   count                = "${local.master_resource_count}"
   name_prefix          = "${var.cluster_name}-master-${element(local.az_names, count.index)}-"
-  image_id             = "${data.aws_ami.k8s_ami.id}"
+  image_id             = "${aws_ami_copy.k8s-ami.id}"
   instance_type        = "${var.master_instance_type}"
   key_name             = "${var.instance_key_name}"
   iam_instance_profile = "${aws_iam_instance_profile.masters.name}"
@@ -151,7 +151,7 @@ resource "aws_ebs_volume" "etcd-events" {
   availability_zone = "${element(local.az_names, count.index)}"
   size              = 20
   type              = "gp2"
-  encrypted         = false
+  encrypted         = "${var.use_encryption}"
 
   tags = {
     KubernetesCluster    = "${local.cluster_fqdn}"

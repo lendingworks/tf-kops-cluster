@@ -35,6 +35,11 @@ variable "public_subnet_cidr_blocks" {
   type = "list"
 }
 
+# Use encryption for all volumes.
+variable "use_encryption" {
+  default = true
+}
+
 # Force single master. Can be used when a master per AZ is not required or if running
 # in a region with only 2 AZs.
 variable "force_single_master" {
@@ -69,6 +74,11 @@ variable "node_asg_desired" {
 # Node autoscaling group max
 variable "node_asg_max" {
   default = 2
+}
+
+# Size of each node's root disk
+variable "node_volume_size" {
+  default = 128
 }
 
 # Spot instance price, default is null

@@ -10,7 +10,7 @@ Pull requests welcome.
 
 ```hcl
 module "cluster1" {
-  source                      = "github.com/FutureSharks/tf-kops-cluster/module"
+  source                      = "github.com/lendingworks/tf-kops-cluster//module"
   sg_allow_ssh                = "${aws_security_group.allow_ssh.id}"
   sg_allow_http_s             = "${aws_security_group.allow_http.id}"
   cluster_name                = "cluster1"
@@ -41,7 +41,7 @@ Authentication: RBAC only
 
 Networking: calico or flannel
 
-Kops version: 1.8.1
+Kops version: 1.9.2
 
 Supported Kubernetes versions:
   - 1.7.10
@@ -49,3 +49,4 @@ Supported Kubernetes versions:
   - 1.8.4
   - 1.8.6
   - 1.8.7
+  - 1.9.8
