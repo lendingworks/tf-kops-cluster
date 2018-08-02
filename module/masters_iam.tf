@@ -20,14 +20,9 @@ data "aws_iam_policy_document" "assume_role_policy_masters" {
   }
 }
 
-resource "aws_iam_policy_attachment" "masters" {
-  name = "k8s_masters_${var.cluster_name}_attachment"
-
-  roles = [
-    "${aws_iam_role.masters.name}",
-  ]
-
+resource "aws_iam_role_policy_attachment" "masters" {
   policy_arn = "${aws_iam_policy.masters.arn}"
+  role       = "${aws_iam_role.masters.name}"
 }
 
 resource "aws_iam_policy" "masters" {

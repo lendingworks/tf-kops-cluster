@@ -20,10 +20,9 @@ data "aws_iam_policy_document" "assume_role_policy_nodes" {
   }
 }
 
-resource "aws_iam_policy_attachment" "nodes" {
-  name       = "k8s_cluster_${var.cluster_name}_nodes"
-  roles      = ["${aws_iam_role.nodes.name}"]
+resource "aws_iam_role_policy_attachment" "nodes" {
   policy_arn = "${aws_iam_policy.nodes.arn}"
+  role       = "${aws_iam_role.nodes.name}"
 }
 
 resource "aws_iam_policy" "nodes" {
