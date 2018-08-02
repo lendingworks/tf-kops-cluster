@@ -39,5 +39,6 @@ kubelet:
   podInfraContainerImage: gcr.io/google_containers/pause-amd64:3.0
   podManifestPath: /etc/kubernetes/manifests
   requireKubeconfig: true
+  imagePullProgressDeadline: 60m
 
 __EOF_CLUSTER_SPEC

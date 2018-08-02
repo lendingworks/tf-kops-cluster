@@ -16,6 +16,7 @@ data "aws_ami" "k8s_ami" {
 
   filter {
     name   = "owner-id"
+    // User: kope.io
     values = ["383156758163"]
   }
 
