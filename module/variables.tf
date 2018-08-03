@@ -81,6 +81,12 @@ variable "node_volume_size" {
   default = 128
 }
 
+# Any ingress ALB target groups that need to be linked to the nodes
+variable "node_alb_ingress_target_group_arns" {
+  type    = "list"
+  default = []
+}
+
 # Spot instance price, default is null
 variable "max_price_spot" {
   default = ""
