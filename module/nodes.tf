@@ -7,7 +7,7 @@ resource "aws_autoscaling_group" "node" {
   min_size             = "${var.node_asg_min}"
   desired_capacity     = "${var.node_asg_desired}"
   vpc_zone_identifier  = ["${split(",", local.k8s_subnet_ids)}"]
-  target_group_arns    = ["${var.alb_ingress_target_group_arns}"]
+  target_group_arns    = ["${var.node_alb_ingress_target_group_arns}"]
 
   # Ignore changes to autoscaling group min/max/desired as these attributes are
   # managed by the Kubernetes cluster autoscaler addon
