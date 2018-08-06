@@ -1,7 +1,7 @@
 ### ASG OnDemand Instances
 resource "aws_autoscaling_group" "node" {
   depends_on           = ["null_resource.create_cluster"]
-  name                 = "${var.cluster_name}_node"
+  name                 = "nodes.${var.cluster_fqdn}"
   launch_configuration = "${aws_launch_configuration.node.id}"
   max_size             = "${var.node_asg_max}"
   min_size             = "${var.node_asg_min}"
@@ -27,7 +27,13 @@ resource "aws_autoscaling_group" "node" {
 
   tag = {
     key                 = "Name"
-    value               = "k8s_${var.cluster_name}_node"
+    value               = "nodes.${var.cluster_fqdn}"
+    propagate_at_launch = true
+  }
+
+  tag = {
+    key                 = "k8s.io/cluster-autoscaler/node-template/label/kops.k8s.io/instancegroup"
+    value               = "nodes"
     propagate_at_launch = true
   }
 
@@ -69,14 +75,15 @@ resource "aws_launch_configuration" "node" {
 }
 
 resource "aws_security_group" "node" {
-  name        = "k8s-${var.cluster_name}-node"
+  name        = "nodes.${var.cluster_fqdn}"
   vpc_id      = "${var.vpc_id}"
   description = "Kubernetes cluster ${var.cluster_name} nodes"
 
-  tags = {
-    KubernetesCluster = "${local.cluster_fqdn}"
-    Name              = "k8s_${var.cluster_name}_node"
-  }
+  tags = "${map(
+    "Name", "nodes.${var.cluster_fqdn}",
+    "KubernetesCluster", "${local.cluster_fqdn}",
+    "kubernetes.io/cluster/${var.cluster_fqdn}", "owned"
+  )}"
 
   egress {
     from_port   = 0
@@ -91,12 +98,13 @@ resource "aws_autoscaling_group" "node_spot" {
   count = "${var.max_price_spot != "" ? 1 : 0}"
 
   depends_on           = ["null_resource.create_cluster"]
-  name                 = "k8s_${var.cluster_name}_node_spot"
+  name                 = "${var.cluster_name}_node_spot"
   launch_configuration = "${aws_launch_configuration.node_spot.id}"
   max_size             = "${var.node_asg_max}"
   min_size             = "${var.node_asg_min}"
   desired_capacity     = "${var.node_asg_desired}"
   vpc_zone_identifier  = ["${split(",", local.k8s_subnet_ids)}"]
+  target_group_arns    = ["${var.node_alb_ingress_target_group_arns}"]
 
   # Ignore changes to autoscaling group min/max/desired as these attributes are
   # managed by the Kubernetes cluster autoscaler addon
@@ -116,7 +124,13 @@ resource "aws_autoscaling_group" "node_spot" {
 
   tag = {
     key                 = "Name"
-    value               = "k8s-${var.cluster_name}-node"
+    value               = "nodes.${var.cluster_fqdn}"
+    propagate_at_launch = true
+  }
+
+  tag = {
+    key                 = "k8s.io/cluster-autoscaler/node-template/label/kops.k8s.io/instancegroup"
+    value               = "nodes"
     propagate_at_launch = true
   }
 

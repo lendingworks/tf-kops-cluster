@@ -1,10 +1,10 @@
 resource "aws_iam_instance_profile" "masters" {
-  name = "k8s_masters_${var.cluster_name}"
+  name = "masters.${var.cluster_fqdn}"
   role = "${aws_iam_role.masters.name}"
 }
 
 resource "aws_iam_role" "masters" {
-  name               = "k8s_masters_${var.cluster_name}"
+  name               = "masters.${var.cluster_fqdn}"
   assume_role_policy = "${data.aws_iam_policy_document.assume_role_policy_masters.json}"
 }
 
@@ -26,7 +26,7 @@ resource "aws_iam_role_policy_attachment" "masters" {
 }
 
 resource "aws_iam_policy" "masters" {
-  name        = "k8s_masters_${var.cluster_name}"
+  name        = "masters.${var.cluster_fqdn}"
   description = "Kubernetes cluster ${var.cluster_name} masters instances"
   policy      = "${data.aws_iam_policy_document.masters.json}"
 }

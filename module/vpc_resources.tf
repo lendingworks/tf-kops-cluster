@@ -5,10 +5,13 @@ resource "aws_subnet" "public" {
   availability_zone       = "${element(local.az_names, count.index)}"
   map_public_ip_on_launch = true
 
-  tags {
-    "Name"              = "k8s cluster ${var.cluster_name} ${element(local.az_letters, count.index)} public"
-    "KubernetesCluster" = "${local.cluster_fqdn}"
-  }
+  tags = "${map(
+    "Name", "${element(local.az_names, count.index)}.${var.cluster_fqdn}",
+    "KubernetesCluster", "${local.cluster_fqdn}",
+    "SubnetType", "Public",
+    "kubernetes.io/role/elb", "1",
+    "kubernetes.io/cluster/${var.cluster_fqdn}", "owned"
+  )}"
 }
 
 resource "aws_route_table" "public" {
@@ -19,9 +22,12 @@ resource "aws_route_table" "public" {
     gateway_id = "${var.internet_gateway_id}"
   }
 
-  tags {
-    "Name" = "k8s cluster ${var.cluster_name} public"
-  }
+  tags = "${map(
+    "Name", "${element(local.az_names, count.index)}.${var.cluster_fqdn}",
+    "KubernetesCluster", "${local.cluster_fqdn}",
+    "kubernetes.io/kops/role", "public",
+    "kubernetes.io/cluster/${var.cluster_fqdn}", "owned"
+  )}"
 }
 
 resource "aws_route_table_association" "public" {
