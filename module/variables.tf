@@ -56,9 +56,19 @@ variable "node_instance_type" {
   default = "t2.medium"
 }
 
+# Enable T2 unlimited mode for nodes
+variable "node_t2_unlimited" {
+  default = false
+}
+
 # Spot node instance type
 variable "spot_node_instance_type" {
   default = "t2.medium"
+}
+
+# Enable T2 unlimited mode for spot nodes
+variable "spot_node_t2_unlimited" {
+  default = false
 }
 
 # Node autoscaling group min

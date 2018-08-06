@@ -73,6 +73,10 @@ resource "aws_launch_template" "node" {
     delete_on_termination = true
   }
 
+  credit_specification {
+    cpu_credits = "${var.spot_node_t2_unlimited ? "unlimited" : "standard"}"
+  }
+
   lifecycle = {
     create_before_destroy = true
   }
@@ -175,6 +179,10 @@ resource "aws_launch_template" "node_spot" {
     volume_type           = "gp2"
     volume_size           = 128
     delete_on_termination = true
+  }
+
+  credit_specification {
+    cpu_credits = "${var.spot_node_t2_unlimited ? "unlimited" : "standard"}"
   }
 
   lifecycle = {
