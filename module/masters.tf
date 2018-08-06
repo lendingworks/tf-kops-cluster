@@ -3,11 +3,15 @@ resource "aws_autoscaling_group" "master" {
   count                = "${local.master_resource_count}"
   name                 = "master-${element(local.az_names, count.index)}.masters.${var.cluster_fqdn}"
   vpc_zone_identifier  = ["${element(split(",", local.k8s_subnet_ids), count.index)}"]
-  launch_configuration = "${element(aws_launch_configuration.master.*.id, count.index)}"
   load_balancers       = ["${aws_elb.master.name}"]
   max_size             = 1
   min_size             = 1
   desired_capacity     = 1
+
+  launch_template {
+    id      = "${element(aws_launch_template.master.*.id, count.index)}"
+    version = "${element(aws_launch_template.master.*.latest_version, count.index)}"
+  }
 
   tag = {
     key                 = "KubernetesCluster"
@@ -125,7 +129,7 @@ resource "aws_security_group" "master_elb" {
   )}"
 }
 
-resource "aws_launch_configuration" "master" {
+resource "aws_launch_template" "master" {
   count                = "${local.master_resource_count}"
   name_prefix          = "k8s-${var.cluster_name}-master-${element(local.az_names, count.index)}-"
   image_id             = "${aws_ami_copy.k8s-ami.id}"
