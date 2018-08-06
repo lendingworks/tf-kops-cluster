@@ -1,7 +1,7 @@
 ### ASG OnDemand Instances
 resource "aws_autoscaling_group" "node" {
   depends_on           = ["null_resource.create_cluster"]
-  name                 = "${var.cluster_name}_node"
+  name                 = "nodes.${var.cluster_fqdn}"
   launch_configuration = "${aws_launch_configuration.node.id}"
   max_size             = "${var.node_asg_max}"
   min_size             = "${var.node_asg_min}"
@@ -27,7 +27,13 @@ resource "aws_autoscaling_group" "node" {
 
   tag = {
     key                 = "Name"
-    value               = "${var.cluster_name}_node"
+    value               = "nodes.${var.cluster_fqdn}"
+    propagate_at_launch = true
+  }
+
+  tag = {
+    key                 = "k8s.io/cluster-autoscaler/node-template/label/kops.k8s.io/instancegroup"
+    value               = "nodes"
     propagate_at_launch = true
   }
 

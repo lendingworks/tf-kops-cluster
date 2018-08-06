@@ -1,7 +1,7 @@
 resource "aws_autoscaling_group" "master" {
   depends_on           = ["null_resource.create_cluster"]
   count                = "${local.master_resource_count}"
-  name                 = "${var.cluster_name}_master_${element(local.az_letters, count.index)}"
+  name                 = "master-${element(local.az_names, count.index)}.masters.${var.cluster_fqdn}"
   vpc_zone_identifier  = ["${element(split(",", local.k8s_subnet_ids), count.index)}"]
   launch_configuration = "${element(aws_launch_configuration.master.*.id, count.index)}"
   load_balancers       = ["${aws_elb.master.name}"]
@@ -17,7 +17,7 @@ resource "aws_autoscaling_group" "master" {
 
   tag = {
     key                 = "Name"
-    value               = "${var.cluster_name}_master_${element(local.az_letters, count.index)}"
+    value               = "master-${element(local.az_names, count.index)}.masters.${var.cluster_fqdn}"
     propagate_at_launch = true
   }
 
@@ -26,10 +26,16 @@ resource "aws_autoscaling_group" "master" {
     value               = "1"
     propagate_at_launch = true
   }
+
+  tag = {
+    key                 = "k8s.io/cluster-autoscaler/node-template/label/kops.k8s.io/instancegroup"
+    value               = "master-${element(local.az_names, count.index)}"
+    propagate_at_launch = true
+  }
 }
 
 resource "aws_elb" "master" {
-  name         = "${var.cluster_name}-master"
+  name         = "k8s-${var.cluster_name}-master"
   subnets      = ["${aws_subnet.public.*.id}"]
   idle_timeout = 1200
 
@@ -54,7 +60,7 @@ resource "aws_elb" "master" {
   }
 
   tags {
-    Name              = "${var.cluster_name}_master"
+    Name              = "api.${var.cluster_fqdn}"
     KubernetesCluster = "${local.cluster_fqdn}"
   }
 }
