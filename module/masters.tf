@@ -79,14 +79,15 @@ resource "aws_route53_record" "master_elb" {
 }
 
 resource "aws_security_group" "master" {
-  name        = "k8s-${var.cluster_name}-master"
+  name        = "master.${var.cluster_fqdn}"
   vpc_id      = "${var.vpc_id}"
-  description = "K8s ${var.cluster_name} master"
+  description = "K8s ${var.cluster_name} masters"
 
-  tags = {
-    Name              = "k8s_${var.cluster_name}_master"
-    KubernetesCluster = "${local.cluster_fqdn}"
-  }
+  tags = "${map(
+    "Name", "master.${var.cluster_fqdn}",
+    "KubernetesCluster", "${local.cluster_fqdn}",
+    "kubernetes.io/cluster/${var.cluster_fqdn}", "owned"
+  )}"
 
   egress {
     from_port   = 0
@@ -106,7 +107,7 @@ resource "aws_security_group_rule" "master_elb_to_master" {
 }
 
 resource "aws_security_group" "master_elb" {
-  name        = "k8s-${var.cluster_name}-master-elb"
+  name        = "api-elb.${var.cluster_fqdn}"
   vpc_id      = "${var.vpc_id}"
   description = "K8s ${var.cluster_name} master ELB"
 
@@ -117,9 +118,11 @@ resource "aws_security_group" "master_elb" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  tags {
-    Name = "k8s_${var.cluster_name}_master_elb"
-  }
+  tags = "${map(
+    "Name", "api-elb.${var.cluster_fqdn}",
+    "KubernetesCluster", "${local.cluster_fqdn}",
+    "kubernetes.io/cluster/${var.cluster_fqdn}", "owned"
+  )}"
 }
 
 resource "aws_launch_configuration" "master" {

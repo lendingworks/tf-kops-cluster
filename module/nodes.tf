@@ -75,14 +75,15 @@ resource "aws_launch_configuration" "node" {
 }
 
 resource "aws_security_group" "node" {
-  name        = "k8s-${var.cluster_name}-node"
+  name        = "nodes.${var.cluster_fqdn}"
   vpc_id      = "${var.vpc_id}"
   description = "Kubernetes cluster ${var.cluster_name} nodes"
 
-  tags = {
-    KubernetesCluster = "${local.cluster_fqdn}"
-    Name              = "k8s_${var.cluster_name}_node"
-  }
+  tags = "${map(
+    "Name", "nodes.${var.cluster_fqdn}",
+    "KubernetesCluster", "${local.cluster_fqdn}",
+    "kubernetes.io/cluster/${var.cluster_fqdn}", "owned"
+  )}"
 
   egress {
     from_port   = 0

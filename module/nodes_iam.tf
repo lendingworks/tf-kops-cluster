@@ -1,10 +1,10 @@
 resource "aws_iam_instance_profile" "nodes" {
-  name = "k8s_nodes_${var.cluster_name}"
+  name = "nodes.${var.cluster_fqdn}"
   role = "${aws_iam_role.nodes.name}"
 }
 
 resource "aws_iam_role" "nodes" {
-  name               = "k8s_nodes_${var.cluster_name}"
+  name               = "nodes.${var.cluster_fqdn}"
   assume_role_policy = "${data.aws_iam_policy_document.assume_role_policy_nodes.json}"
 }
 
@@ -26,7 +26,7 @@ resource "aws_iam_role_policy_attachment" "nodes" {
 }
 
 resource "aws_iam_policy" "nodes" {
-  name        = "k8s_cluster_${var.cluster_name}_nodes"
+  name        = "nodes.${var.cluster_fqdn}"
   description = "Kubernetes cluster ${var.cluster_name} nodes instances"
   policy      = "${data.aws_iam_policy_document.nodes.json}"
 }
