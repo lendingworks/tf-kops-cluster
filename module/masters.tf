@@ -1,7 +1,7 @@
 resource "aws_autoscaling_group" "master" {
   depends_on           = ["null_resource.create_cluster"]
   count                = "${local.master_resource_count}"
-  name                 = "k8s_${var.cluster_name}_master_${element(local.az_letters, count.index)}"
+  name                 = "${var.cluster_name}_master_${element(local.az_letters, count.index)}"
   vpc_zone_identifier  = ["${element(split(",", local.k8s_subnet_ids), count.index)}"]
   launch_configuration = "${element(aws_launch_configuration.master.*.id, count.index)}"
   load_balancers       = ["${aws_elb.master.name}"]
@@ -17,7 +17,7 @@ resource "aws_autoscaling_group" "master" {
 
   tag = {
     key                 = "Name"
-    value               = "k8s_${var.cluster_name}_master_${element(local.az_letters, count.index)}"
+    value               = "${var.cluster_name}_master_${element(local.az_letters, count.index)}"
     propagate_at_launch = true
   }
 
@@ -29,7 +29,7 @@ resource "aws_autoscaling_group" "master" {
 }
 
 resource "aws_elb" "master" {
-  name         = "k8s-${var.cluster_name}-master"
+  name         = "${var.cluster_name}-master"
   subnets      = ["${aws_subnet.public.*.id}"]
   idle_timeout = 1200
 
@@ -54,7 +54,7 @@ resource "aws_elb" "master" {
   }
 
   tags {
-    Name              = "k8s_${var.cluster_name}_master"
+    Name              = "${var.cluster_name}_master"
     KubernetesCluster = "${local.cluster_fqdn}"
   }
 }

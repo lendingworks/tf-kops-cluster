@@ -27,7 +27,7 @@ resource "aws_autoscaling_group" "node" {
 
   tag = {
     key                 = "Name"
-    value               = "k8s_${var.cluster_name}_node"
+    value               = "${var.cluster_name}_node"
     propagate_at_launch = true
   }
 
@@ -91,7 +91,7 @@ resource "aws_autoscaling_group" "node_spot" {
   count = "${var.max_price_spot != "" ? 1 : 0}"
 
   depends_on           = ["null_resource.create_cluster"]
-  name                 = "k8s_${var.cluster_name}_node_spot"
+  name                 = "${var.cluster_name}_node_spot"
   launch_configuration = "${aws_launch_configuration.node_spot.id}"
   max_size             = "${var.node_asg_max}"
   min_size             = "${var.node_asg_min}"
@@ -116,7 +116,7 @@ resource "aws_autoscaling_group" "node_spot" {
 
   tag = {
     key                 = "Name"
-    value               = "k8s-${var.cluster_name}-node"
+    value               = "${var.cluster_name}-node"
     propagate_at_launch = true
   }
 
