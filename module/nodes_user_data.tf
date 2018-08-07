@@ -21,6 +21,16 @@ data "template_file" "node_user_data_4" {
 
   vars {
     instance_group = "nodes"
+    is_spot        = "false"
+  }
+}
+
+data "template_file" "node_user_data_4_spot" {
+  template = "${file("${path.module}/user_data/04_ig_spec.sh.tpl")}"
+
+  vars {
+    instance_group = "nodes"
+    is_spot        = "true"
   }
 }
 

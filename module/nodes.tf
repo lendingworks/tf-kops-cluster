@@ -141,12 +141,6 @@ resource "aws_autoscaling_group" "node_spot" {
   }
 
   tag = {
-    key                 = "k8s.io/role/spot-worker"
-    value               = "1"
-    propagate_at_launch = true
-  }
-
-  tag = {
     key                 = "k8s.io/cluster-autoscaler/enabled"
     value               = "1"
     propagate_at_launch = true
@@ -162,7 +156,7 @@ resource "aws_launch_configuration" "node_spot" {
   key_name             = "${var.instance_key_name}"
   spot_price           = "${var.max_price_spot}"
   iam_instance_profile = "${aws_iam_instance_profile.nodes.name}"
-  user_data            = "${element(data.template_file.node_user_data_1.*.rendered, count.index)}${file("${path.module}/user_data/02_download_nodeup.sh")}${element(data.template_file.node_user_data_3.*.rendered, count.index)}${element(data.template_file.node_user_data_4.*.rendered, count.index)}${element(data.template_file.node_user_data_5.*.rendered, count.index)}"
+  user_data            = "${element(data.template_file.node_user_data_1.*.rendered, count.index)}${file("${path.module}/user_data/02_download_nodeup.sh")}${element(data.template_file.node_user_data_3.*.rendered, count.index)}${element(data.template_file.node_user_data_4_spot.*.rendered, count.index)}${element(data.template_file.node_user_data_5.*.rendered, count.index)}"
 
   security_groups = [
     "${aws_security_group.node.id}",
