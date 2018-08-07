@@ -44,6 +44,12 @@ resource "aws_autoscaling_group" "node" {
   }
 
   tag = {
+    key                 = "k8s.io/role/spot-worker"
+    value               = "1"
+    propagate_at_launch = true
+  }
+
+  tag = {
     key                 = "k8s.io/cluster-autoscaler/enabled"
     value               = "1"
     propagate_at_launch = true
