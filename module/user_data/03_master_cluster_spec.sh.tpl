@@ -25,13 +25,14 @@ kubeAPIServer:
   - PersistentVolumeLabel
   - DefaultStorageClass
   - DefaultTolerationSeconds
+  - MutatingAdmissionWebhook
+  - ValidatingAdmissionWebhook
   - NodeRestriction
-  - Priority
   - ResourceQuota
   allowPrivileged: true
   anonymousAuth: false
   apiServerCount: ${master_count}
-  authorizationMode: AlwaysAllow
+  authorizationMode: RBAC
   cloudProvider: aws
   etcdServers:
   - http://127.0.0.1:4001

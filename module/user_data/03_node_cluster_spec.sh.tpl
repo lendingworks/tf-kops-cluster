@@ -13,7 +13,7 @@ docker:
   - max-size=10m
   - max-file=5
   storage: overlay,aufs
-  version: 1.13.1
+  version: ${docker_version}
 kubeProxy:
   clusterCIDR: 100.96.0.0/11
   cpuRequest: 100m
