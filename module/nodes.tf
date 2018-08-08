@@ -97,7 +97,7 @@ resource "aws_security_group" "node" {
 resource "aws_autoscaling_group" "node_spot" {
   count = "${var.max_price_spot != "" ? 1 : 0}"
 
-  depends_on           = ["null_resource.create_cluster"]
+  depends_on           = ["null_resource.create_spot_instancegroup"]
   name                 = "nodes-spot.${var.cluster_fqdn}"
   launch_configuration = "${aws_launch_configuration.node_spot.id}"
   max_size             = "${var.node_asg_max}"
