@@ -54,6 +54,12 @@ locals {
 }
 
 locals {
+  spot_asg_min     = "${var.spot_asg_min == "" ? var.node_asg_min : var.spot_asg_min}"
+  spot_asg_max     = "${var.spot_asg_max == "" ? var.node_asg_max : var.spot_asg_max}"
+  spot_asg_desired = "${var.spot_asg_desired == "" ? var.node_asg_desired : var.spot_asg_desired}"
+}
+
+locals {
   # Temporary variables due to the lack of combined logic operations.
   cluster_autoscaler_both          = "${var.node_cluster_autoscaling_type == "both" ? 1 : 0}"
   cluster_autoscaler_ondemand_only = "${var.node_cluster_autoscaling_type == "ondemand" ? 1 : 0}"

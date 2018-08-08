@@ -100,9 +100,9 @@ resource "aws_autoscaling_group" "node_spot" {
   depends_on           = ["null_resource.create_spot_instancegroup"]
   name                 = "nodes-spot.${var.cluster_fqdn}"
   launch_configuration = "${aws_launch_configuration.node_spot.id}"
-  max_size             = "${var.node_asg_max}"
-  min_size             = "${var.node_asg_min}"
-  desired_capacity     = "${var.node_asg_desired}"
+  max_size             = "${local.spot_asg_max}"
+  min_size             = "${local.spot_asg_min}"
+  desired_capacity     = "${local.spot_asg_desired}"
   vpc_zone_identifier  = ["${split(",", local.k8s_subnet_ids)}"]
   target_group_arns    = ["${var.node_alb_ingress_target_group_arns}"]
 
