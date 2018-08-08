@@ -21,7 +21,8 @@ resource "null_resource" "create_spot_instancegroup" {
   depends_on = ["null_resource.create_cluster"]
 
   provisioner "local-exec" {
-    command = "AWS_PROFILE=${var.aws_profile} kops create ig nodes-spot --role=node --state=s3://${var.kops_s3_bucket_id} --output=yaml --name=${local.cluster_fqdn} --edit=false"
+    command    = "AWS_PROFILE=${var.aws_profile} kops create ig nodes-spot --role=node --state=s3://${var.kops_s3_bucket_id} --output=yaml --name=${local.cluster_fqdn} --edit=false"
+    on_failure = "continue"
   }
 }
 
