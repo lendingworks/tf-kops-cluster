@@ -97,4 +97,28 @@ data "aws_iam_policy_document" "nodes" {
     actions   = ["sts:AssumeRole"]
     resources = ["*"]
   }
+
+  // Required for the cluster autoscaler.
+  statement {
+    effect = "Allow"
+    actions = [
+      "autoscaling:DescribeAutoScalingGroups",
+    ]
+    resources = ["*"]
+  }
+
+  statement {
+    effect = "Allow"
+    actions = [
+      "autoscaling:DescribeAutoScalingInstances",
+      "autoscaling:SetDesiredCapacity",
+      "autoscaling:DescribeLaunchConfigurations",
+      "autoscaling:DescribeTags",
+      "autoscaling:TerminateInstanceInAutoScalingGroup"
+    ],
+    resources = [
+      "${aws_autoscaling_group.node.arn}",
+      "${aws_autoscaling_group.node_spot.arn}"
+    ]
+  }
 }
