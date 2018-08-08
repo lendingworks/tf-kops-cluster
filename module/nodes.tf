@@ -48,6 +48,12 @@ resource "aws_autoscaling_group" "node" {
     value               = "1"
     propagate_at_launch = true
   }
+
+  tag = {
+    key                 = "k8s.io/custom-ondemandworker"
+    value               = "true"
+    propagate_at_launch = true
+  }
 }
 
 resource "aws_launch_configuration" "node" {
