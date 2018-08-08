@@ -55,13 +55,14 @@ locals {
 
 locals {
   # Temporary variables due to the lack of combined logic operations.
-  cluster_autoscaler_both          = "${var.node_cluster_autoscaling_type == "both"}"
-  cluster_autoscaler_ondemand_only = "${var.node_cluster_autoscaling_type == "ondemand"}"
-  cluster_autoscaler_spot_only     = "${var.node_cluster_autoscaling_type == "spot"}"
+  cluster_autoscaler_both          = "${var.node_cluster_autoscaling_type == "both" ? 1 : 0}"
+  cluster_autoscaler_ondemand_only = "${var.node_cluster_autoscaling_type == "ondemand" ? 1 : 0}"
+  cluster_autoscaler_spot_only     = "${var.node_cluster_autoscaling_type == "spot" ? 1 : 0}"
 
   # Either 'both' OR the type-specific autoscaler.
   # The reason this works is because booleans are '1' or '0' in TF.
   # Thus, signum(1 + 0) = 1 === true and signum(1 + 1) = 1 === true.
   cluster_autoscaler_ondemand_enabled = "${signum(local.cluster_autoscaler_both + local.cluster_autoscaler_ondemand_only)}"
-  cluster_autoscaler_spot_enabled     = "${signum(local.cluster_autoscaler_both + local.cluster_autoscaler_spot_only)}"
+
+  cluster_autoscaler_spot_enabled = "${signum(local.cluster_autoscaler_both + local.cluster_autoscaler_spot_only)}"
 }
