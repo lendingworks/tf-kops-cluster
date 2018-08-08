@@ -24,14 +24,6 @@ data "template_file" "node_user_data_4" {
   }
 }
 
-data "template_file" "node_user_data_4_spot" {
-  template = "${file("${path.module}/user_data/04_ig_spec.sh.tpl")}"
-
-  vars {
-    instance_group = "nodes"
-  }
-}
-
 data "template_file" "node_user_data_5" {
   template = "${file("${path.module}/user_data/05_kube_env.sh.tpl")}"
 
