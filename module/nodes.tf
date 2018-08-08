@@ -44,7 +44,7 @@ resource "aws_autoscaling_group" "node" {
   }
 
   tag = {
-    key                 = "k8s.io/cluster-autoscaler/enabled"
+    key                 = "k8s.io/cluster-autoscaler/${local.cluster_autoscaler_ondemand_enabled ? "enabled" : "disabled"}"
     value               = "1"
     propagate_at_launch = true
   }
@@ -141,7 +141,7 @@ resource "aws_autoscaling_group" "node_spot" {
   }
 
   tag = {
-    key                 = "k8s.io/cluster-autoscaler/enabled"
+    key                 = "k8s.io/cluster-autoscaler/${local.cluster_autoscaler_spot_enabled ? "enabled" : "disabled"}"
     value               = "1"
     propagate_at_launch = true
   }

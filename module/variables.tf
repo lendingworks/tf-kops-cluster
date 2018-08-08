@@ -87,6 +87,12 @@ variable "node_alb_ingress_target_group_arns" {
   default = []
 }
 
+# One of 'disabled', 'ondemand', 'spot' or 'both'.
+variable "node_cluster_autoscaling_type" {
+  type    = "string"
+  default = "disabled"
+}
+
 # Spot instance price, default is null
 variable "max_price_spot" {
   default = ""
