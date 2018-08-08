@@ -21,12 +21,6 @@ data "template_file" "node_user_data_4" {
 
   vars {
     instance_group = "nodes"
-
-    # We taint on-demand nodes so that spot nodes are preferred.
-    taints = <<TAINTS
-taints:
-  - k8s.io/custom-ondemandworker=true:PreferNoSchedule
-TAINTS
   }
 }
 
@@ -35,10 +29,6 @@ data "template_file" "node_user_data_4_spot" {
 
   vars {
     instance_group = "nodes-spot"
-
-    taints = <<TAINTS
-taints: null
-TAINTS
   }
 }
 

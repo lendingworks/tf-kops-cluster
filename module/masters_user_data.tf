@@ -25,9 +25,6 @@ data "template_file" "master_user_data_4" {
 
   vars {
     instance_group = "master-${element(local.az_names, count.index)}"
-    taints = <<TAINTS
-taints: null
-TAINTS
   }
 }
 
