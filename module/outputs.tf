@@ -14,6 +14,20 @@ output "node_asg_arn" {
   value = "${aws_autoscaling_group.node.arn}"
 }
 
+# These spot outputs need to be lists as they use 'count' to determine if they
+# will be created.
+output "node_spot_asg_names" {
+  value = "${aws_autoscaling_group.node_spot.*.name}"
+}
+
+output "node_spot_asg_ids" {
+  value = "${aws_autoscaling_group.node_spot.*.id}"
+}
+
+output "node_spot_asg_arns" {
+  value = "${aws_autoscaling_group.node_spot.*.arn}"
+}
+
 output "master_sg_id" {
   value = "${aws_security_group.master.id}"
 }

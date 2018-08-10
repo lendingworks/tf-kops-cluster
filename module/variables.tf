@@ -98,6 +98,21 @@ variable "max_price_spot" {
   default = ""
 }
 
+# Spot instance min, if not set - will use the ondemand instance min.
+variable "spot_asg_min" {
+  default = ""
+}
+
+# Spot instance desired, if not set - will use the ondemand instance desired.
+variable "spot_asg_desired" {
+  default = ""
+}
+
+# Spot instance max, if not set - will use the ondemand instance max.
+variable "spot_asg_max" {
+  default = ""
+}
+
 # Kubernetes version tag to use
 variable "kubernetes_version" {
   default = "1.9.8"
