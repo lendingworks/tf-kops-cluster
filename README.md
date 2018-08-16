@@ -41,7 +41,8 @@ Authentication: RBAC only
 
 Networking: calico or flannel
 
-Kops version: 1.9.2
+Kops version: 1.10.0
 
 Supported Kubernetes versions:
   - 1.9.8
+  - 1.10.3 _(recommended)_

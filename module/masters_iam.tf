@@ -57,6 +57,7 @@ data "aws_iam_policy_document" "masters" {
       "ec2:CreateTags",
       "ec2:CreateVolume",
       "ec2:ModifyInstanceAttribute",
+      "ec2:ModifyVolume",
     ]
 
     resources = ["*"]

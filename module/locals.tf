@@ -1,6 +1,6 @@
 locals {
   # Currently support kops version
-  supported_kops_version = "1.9.2"
+  supported_kops_version = "1.10.0"
 
   # Removes the last character of the FQDN if it is '.'
   cluster_fqdn = "${replace(var.cluster_fqdn, "/\\.$/", "")}"
@@ -25,6 +25,17 @@ locals {
 
 locals {
   k8s_versions = {
+    "1.10.3" = {
+      kubelet_hash   = "4ffe05e3cdb9291e56e0268ea2b51047761bf7ad"
+      kubectl_hash   = "94f996d645e74634a4be67bbb5417f892774230b"
+      cni_hash       = "d595d3ded6499a64e8dac02466e2f5f2ce257c9f"
+      cni_file_name  = "cni-plugins-amd64-v0.6.0.tgz"
+      utils_hash     = "1903d30f87488f6e3550918283ff8aa1c5553471"
+      protokube_hash = "139d69230bb029a419ca8e5a9be2f406d8e685c4"
+      ami_name       = "k8s-1.10-debian-jessie-amd64-hvm-ebs-2018-05-27"
+      docker_version = "17.03.2"
+    }
+
     "1.9.8" = {
       kubelet_hash   = "6468397888494efe4a32e6bd96700ba6a86e635a"
       kubectl_hash   = "9a3537a7d95f1beec55e2fae082c364f6b91fdc0"
