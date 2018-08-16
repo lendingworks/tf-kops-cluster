@@ -32,8 +32,8 @@ locals {
       cni_file_name  = "cni-plugins-amd64-v0.6.0.tgz"
       utils_hash     = "1903d30f87488f6e3550918283ff8aa1c5553471"
       protokube_hash = "139d69230bb029a419ca8e5a9be2f406d8e685c4"
-      ami_name       = "debian-stretch-hvm-x86_64-gp2-2018-08-14-82175"
-      ami_owner      = "379101102735"
+      ami_name       = "k8s-1.10-debian-stretch-amd64-hvm-ebs-2018-05-27"
+      ami_owner      = "383156758163"
       docker_version = "17.09.0"
     }
 

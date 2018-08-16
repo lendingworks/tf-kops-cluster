@@ -9,8 +9,8 @@ resource "aws_autoscaling_group" "node" {
   vpc_zone_identifier  = ["${split(",", local.k8s_subnet_ids)}"]
   target_group_arns    = ["${var.node_alb_ingress_target_group_arns}"]
 
-  # Ignore changes to autoscaling group min/max/desired as these attributes are
-  # managed by the Kubernetes cluster autoscaler addon
+  # Ignore changes to autoscaling group desired as it is managed by the
+  # Kubernetes cluster autoscaler addon
   lifecycle {
     ignore_changes = [
       "max_size",
@@ -112,8 +112,8 @@ resource "aws_autoscaling_group" "node_spot" {
   vpc_zone_identifier  = ["${split(",", local.k8s_subnet_ids)}"]
   target_group_arns    = ["${var.node_alb_ingress_target_group_arns}"]
 
-  # Ignore changes to autoscaling group min/max/desired as these attributes are
-  # managed by the Kubernetes cluster autoscaler addon
+  # Ignore changes to autoscaling group desired as it is managed by the
+  # Kubernetes cluster autoscaler addon
   lifecycle {
     ignore_changes = [
       "max_size",
