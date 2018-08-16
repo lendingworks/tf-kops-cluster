@@ -173,7 +173,7 @@ resource "aws_launch_configuration" "node_spot" {
 
   root_block_device = {
     volume_type           = "gp2"
-    volume_size           = 128
+    volume_size           = "${var.node_volume_size}"
     delete_on_termination = true
   }
 
