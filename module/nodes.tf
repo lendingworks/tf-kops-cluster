@@ -13,8 +13,6 @@ resource "aws_autoscaling_group" "node" {
   # managed by the Kubernetes cluster autoscaler addon
   lifecycle {
     ignore_changes = [
-      "max_size",
-      "min_size",
       "desired_capacity",
     ]
   }
@@ -116,8 +114,6 @@ resource "aws_autoscaling_group" "node_spot" {
   # managed by the Kubernetes cluster autoscaler addon
   lifecycle {
     ignore_changes = [
-      "max_size",
-      "min_size",
       "desired_capacity",
     ]
   }
