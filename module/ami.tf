@@ -7,6 +7,6 @@ resource "aws_ami_copy" "k8s-ami" {
   encrypted         = "${var.use_encryption}"
 
   tags {
-    Name = "${local.ami_name}"
+    Name = "${data.aws_ami.k8s_ami.name}"
   }
 }
