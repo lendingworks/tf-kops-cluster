@@ -1,3 +1,9 @@
+# If FALSE, this will scale the cluster down to zero instances but keep all
+# volumes so that it can be brought back up.
+variable "enabled" {
+  default = true
+}
+
 # Name for the cluster
 variable "cluster_name" {}
 

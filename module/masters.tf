@@ -6,8 +6,8 @@ resource "aws_autoscaling_group" "master" {
   launch_configuration = "${element(aws_launch_configuration.master.*.id, count.index)}"
   load_balancers       = ["${aws_elb.master.name}"]
   max_size             = 1
-  min_size             = 1
-  desired_capacity     = 1
+  min_size             = "${var.enabled ? 1 : 0}"
+  desired_capacity     = "${var.enabled ? 1 : 0}"
 
   tag = {
     key                 = "KubernetesCluster"
