@@ -4,15 +4,15 @@ output "node_sg_id" {
 
 # These outputs need to be lists as they use 'count' to determine if they
 # will be created.
-output "node_asg_name" {
+output "node_asg_names" {
   value = "${aws_autoscaling_group.node.*.name}"
 }
 
-output "node_asg_id" {
+output "node_asg_ids" {
   value = "${aws_autoscaling_group.node.*.id}"
 }
 
-output "node_asg_arn" {
+output "node_asg_arns" {
   value = "${aws_autoscaling_group.node.*.arn}"
 }
 
