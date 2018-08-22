@@ -35,8 +35,8 @@ locals {
       docker_version = "17.09.0"
 
       # This will automatically find the latest image.
-      ami_name       = "debian-stretch-hvm-x86_64-gp2-*"
-      ami_owner      = "379101102735"
+      ami_name  = "debian-stretch-hvm-x86_64-gp2-*"
+      ami_owner = "379101102735"
     }
 
     "1.9.8" = {
@@ -70,6 +70,8 @@ locals {
 }
 
 locals {
+  has_spot_price   = "${var.max_price_spot == "" ? 1 : 0}"
+  spot_enabled     = "${local.has_spot_price * var.enabled}"
   spot_asg_min     = "${var.spot_asg_min == "" ? var.node_asg_min : var.spot_asg_min}"
   spot_asg_max     = "${var.spot_asg_max == "" ? var.node_asg_max : var.spot_asg_max}"
   spot_asg_desired = "${var.spot_asg_desired == "" ? var.node_asg_desired : var.spot_asg_desired}"

@@ -2,16 +2,18 @@ output "node_sg_id" {
   value = "${aws_security_group.node.id}"
 }
 
+# These outputs need to be lists as they use 'count' to determine if they
+# will be created.
 output "node_asg_name" {
-  value = "${aws_autoscaling_group.node.name}"
+  value = "${aws_autoscaling_group.node.*.name}"
 }
 
 output "node_asg_id" {
-  value = "${aws_autoscaling_group.node.id}"
+  value = "${aws_autoscaling_group.node.*.id}"
 }
 
 output "node_asg_arn" {
-  value = "${aws_autoscaling_group.node.arn}"
+  value = "${aws_autoscaling_group.node.*.arn}"
 }
 
 # These spot outputs need to be lists as they use 'count' to determine if they

@@ -55,6 +55,7 @@ resource "aws_autoscaling_group" "node" {
 }
 
 resource "aws_launch_configuration" "node" {
+  count                = "${var.enabled ? 1 : 0}"
   name_prefix          = "k8s-${var.cluster_name}-node-"
   image_id             = "${aws_ami_copy.k8s-ami.id}"
   instance_type        = "${var.node_instance_type}"
@@ -99,7 +100,7 @@ resource "aws_security_group" "node" {
 
 ### If max_price_spot, then will be created one more ASG and LC
 resource "aws_autoscaling_group" "node_spot" {
-  count = "${var.max_price_spot != "" ? 1 : 0}"
+  count = "${local.spot_enabled ? 1 : 0}"
 
   depends_on           = ["null_resource.create_spot_instancegroup"]
   name                 = "nodes-spot.${var.cluster_fqdn}"
@@ -156,7 +157,7 @@ resource "aws_autoscaling_group" "node_spot" {
 }
 
 resource "aws_launch_configuration" "node_spot" {
-  count = "${var.max_price_spot != "" ? 1 : 0}"
+  count = "${local.spot_enabled ? 1 : 0}"
 
   name_prefix          = "k8s-${var.cluster_name}-node-spot-"
   image_id             = "${aws_ami_copy.k8s-ami.id}"
