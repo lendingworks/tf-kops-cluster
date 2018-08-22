@@ -1,5 +1,6 @@
 ### ASG OnDemand Instances
 resource "aws_autoscaling_group" "node" {
+  count                = "${var.enabled ? 1 : 0}"
   depends_on           = ["null_resource.create_cluster"]
   name                 = "nodes.${var.cluster_fqdn}"
   launch_configuration = "${aws_launch_configuration.node.id}"
