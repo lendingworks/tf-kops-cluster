@@ -138,3 +138,13 @@ variable "kubernetes_networking" {
 variable "master_k8s_cpu_threshold" {
   default = 80
 }
+
+# Override AMI.
+variable "override_ami_name" {
+  default = ""
+}
+
+# Override AMI owner.
+variable "override_ami_owner" {
+  default = ""
+}

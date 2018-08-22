@@ -64,8 +64,8 @@ locals {
   cni_file_name  = "${local.k8s_settings["cni_file_name"]}"
   utils_hash     = "${local.k8s_settings["utils_hash"]}"
   protokube_hash = "${local.k8s_settings["protokube_hash"]}"
-  ami_name       = "${local.k8s_settings["ami_name"]}"
-  ami_owner      = "${local.k8s_settings["ami_owner"]}"
+  ami_name       = "${coalesce(var.override_ami_name, local.k8s_settings["ami_name"])}"
+  ami_owner      = "${coalesce(var.override_ami_owner, local.k8s_settings["ami_owner"])}"
   docker_version = "${local.k8s_settings["docker_version"]}"
 }
 
