@@ -25,6 +25,18 @@ locals {
 
 locals {
   k8s_versions = {
+    "1.10.7" = {
+      kubelet_hash   = "83573a97738ae22aff41096d2260002697254f57"
+      kubectl_hash   = "ab40b93f01b02657ed455b94bb9e6a73b0784501"
+      cni_hash       = "d595d3ded6499a64e8dac02466e2f5f2ce257c9f"
+      cni_file_name  = "cni-plugins-amd64-v0.6.0.tgz"
+      utils_hash     = "1903d30f87488f6e3550918283ff8aa1c5553471"
+      protokube_hash = "139d69230bb029a419ca8e5a9be2f406d8e685c4"
+      docker_version = "17.09.0"
+      ami_name       = "debian-stretch-hvm-x86_64-gp2-2018-08-20-85640"
+      ami_owner      = "379101102735"
+    }
+
     "1.10.3" = {
       kubelet_hash   = "4ffe05e3cdb9291e56e0268ea2b51047761bf7ad"
       kubectl_hash   = "94f996d645e74634a4be67bbb5417f892774230b"
@@ -33,10 +45,8 @@ locals {
       utils_hash     = "1903d30f87488f6e3550918283ff8aa1c5553471"
       protokube_hash = "139d69230bb029a419ca8e5a9be2f406d8e685c4"
       docker_version = "17.09.0"
-
-      # This will automatically find the latest image.
-      ami_name  = "debian-stretch-hvm-x86_64-gp2-*"
-      ami_owner = "379101102735"
+      ami_name       = "debian-stretch-hvm-x86_64-gp2-2018-08-20-85640"
+      ami_owner      = "379101102735"
     }
 
     "1.9.8" = {
