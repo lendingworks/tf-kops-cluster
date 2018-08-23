@@ -1,3 +1,9 @@
+# If FALSE, this will scale the cluster down to zero instances but keep all
+# volumes so that it can be brought back up.
+variable "enabled" {
+  default = true
+}
+
 # Name for the cluster
 variable "cluster_name" {}
 
@@ -137,4 +143,14 @@ variable "kubernetes_networking" {
 # Cloudwatch alarm CPU
 variable "master_k8s_cpu_threshold" {
   default = 80
+}
+
+# Override AMI.
+variable "override_ami_name" {
+  default = ""
+}
+
+# Override AMI owner.
+variable "override_ami_owner" {
+  default = ""
 }

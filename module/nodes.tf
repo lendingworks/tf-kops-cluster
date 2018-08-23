@@ -1,16 +1,17 @@
 ### ASG OnDemand Instances
 resource "aws_autoscaling_group" "node" {
+  count                = "${var.enabled ? 1 : 0}"
   depends_on           = ["null_resource.create_cluster"]
   name                 = "nodes.${var.cluster_fqdn}"
   launch_configuration = "${aws_launch_configuration.node.id}"
   max_size             = "${var.node_asg_max}"
-  min_size             = "${var.node_asg_min}"
-  desired_capacity     = "${var.node_asg_desired}"
+  min_size             = "${var.enabled ? var.node_asg_min : 0}"
+  desired_capacity     = "${var.enabled ? var.node_asg_desired : 0}"
   vpc_zone_identifier  = ["${split(",", local.k8s_subnet_ids)}"]
   target_group_arns    = ["${var.node_alb_ingress_target_group_arns}"]
 
-  # Ignore changes to autoscaling group min/max/desired as these attributes are
-  # managed by the Kubernetes cluster autoscaler addon
+  # Ignore changes to autoscaling group desired as it is managed by the
+  # Kubernetes cluster autoscaler addon
   lifecycle {
     ignore_changes = [
       "desired_capacity",
@@ -55,6 +56,7 @@ resource "aws_autoscaling_group" "node" {
 }
 
 resource "aws_launch_configuration" "node" {
+  count                = "${var.enabled ? 1 : 0}"
   name_prefix          = "k8s-${var.cluster_name}-node-"
   image_id             = "${aws_ami_copy.k8s-ami.id}"
   instance_type        = "${var.node_instance_type}"
@@ -99,19 +101,19 @@ resource "aws_security_group" "node" {
 
 ### If max_price_spot, then will be created one more ASG and LC
 resource "aws_autoscaling_group" "node_spot" {
-  count = "${var.max_price_spot != "" ? 1 : 0}"
+  count = "${local.spot_enabled ? 1 : 0}"
 
   depends_on           = ["null_resource.create_spot_instancegroup"]
   name                 = "nodes-spot.${var.cluster_fqdn}"
   launch_configuration = "${aws_launch_configuration.node_spot.id}"
   max_size             = "${local.spot_asg_max}"
-  min_size             = "${local.spot_asg_min}"
-  desired_capacity     = "${local.spot_asg_desired}"
+  min_size             = "${var.enabled ? local.spot_asg_min : 0}"
+  desired_capacity     = "${var.enabled ? local.spot_asg_desired : 0}"
   vpc_zone_identifier  = ["${split(",", local.k8s_subnet_ids)}"]
   target_group_arns    = ["${var.node_alb_ingress_target_group_arns}"]
 
-  # Ignore changes to autoscaling group min/max/desired as these attributes are
-  # managed by the Kubernetes cluster autoscaler addon
+  # Ignore changes to autoscaling group desired as it is managed by the
+  # Kubernetes cluster autoscaler addon
   lifecycle {
     ignore_changes = [
       "desired_capacity",
@@ -156,7 +158,7 @@ resource "aws_autoscaling_group" "node_spot" {
 }
 
 resource "aws_launch_configuration" "node_spot" {
-  count = "${var.max_price_spot != "" ? 1 : 0}"
+  count = "${local.spot_enabled ? 1 : 0}"
 
   name_prefix          = "k8s-${var.cluster_name}-node-spot-"
   image_id             = "${aws_ami_copy.k8s-ami.id}"

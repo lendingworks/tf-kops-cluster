@@ -32,8 +32,11 @@ locals {
       cni_file_name  = "cni-plugins-amd64-v0.6.0.tgz"
       utils_hash     = "1903d30f87488f6e3550918283ff8aa1c5553471"
       protokube_hash = "139d69230bb029a419ca8e5a9be2f406d8e685c4"
-      ami_name       = "k8s-1.10-debian-jessie-amd64-hvm-ebs-2018-05-27"
-      docker_version = "17.03.2"
+      docker_version = "17.09.0"
+
+      # This will automatically find the latest image.
+      ami_name  = "debian-stretch-hvm-x86_64-gp2-*"
+      ami_owner = "379101102735"
     }
 
     "1.9.8" = {
@@ -43,8 +46,9 @@ locals {
       cni_file_name  = "cni-plugins-amd64-v0.6.0.tgz"
       utils_hash     = "72fac6679084d1f929d0abbd8a9ff9337273504b"
       protokube_hash = "527db0b5fd4b635e6cb2ca22bfec813a048855a7"
-      ami_name       = "k8s-1.9-debian-jessie-amd64-hvm-ebs-2018-05-27"
       docker_version = "1.13.1"
+      ami_name       = "k8s-1.9-debian-jessie-amd64-hvm-ebs-2018-05-27"
+      ami_owner      = "383156758163"
     }
   }
 }
@@ -60,11 +64,14 @@ locals {
   cni_file_name  = "${local.k8s_settings["cni_file_name"]}"
   utils_hash     = "${local.k8s_settings["utils_hash"]}"
   protokube_hash = "${local.k8s_settings["protokube_hash"]}"
-  ami_name       = "${local.k8s_settings["ami_name"]}"
+  ami_name       = "${coalesce(var.override_ami_name, local.k8s_settings["ami_name"])}"
+  ami_owner      = "${coalesce(var.override_ami_owner, local.k8s_settings["ami_owner"])}"
   docker_version = "${local.k8s_settings["docker_version"]}"
 }
 
 locals {
+  has_spot_price   = "${var.max_price_spot == "" ? 1 : 0}"
+  spot_enabled     = "${local.has_spot_price * var.enabled}"
   spot_asg_min     = "${var.spot_asg_min == "" ? var.node_asg_min : var.spot_asg_min}"
   spot_asg_max     = "${var.spot_asg_max == "" ? var.node_asg_max : var.spot_asg_max}"
   spot_asg_desired = "${var.spot_asg_desired == "" ? var.node_asg_desired : var.spot_asg_desired}"
