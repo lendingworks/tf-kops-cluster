@@ -35,6 +35,7 @@ locals {
       docker_version = "17.09.0"
       ami_name       = "debian-stretch-hvm-x86_64-gp2-2018-08-20-85640"
       ami_owner      = "379101102735"
+      etcd_version   = "3.1.12"
     }
 
     "1.10.3" = {
@@ -47,6 +48,7 @@ locals {
       docker_version = "17.09.0"
       ami_name       = "debian-stretch-hvm-x86_64-gp2-2018-08-20-85640"
       ami_owner      = "379101102735"
+      etcd_version   = "2.2.1"
     }
 
     "1.9.8" = {
@@ -59,6 +61,7 @@ locals {
       docker_version = "1.13.1"
       ami_name       = "k8s-1.9-debian-jessie-amd64-hvm-ebs-2018-05-27"
       ami_owner      = "383156758163"
+      etcd_version   = "2.2.1"
     }
   }
 }
@@ -77,6 +80,7 @@ locals {
   ami_name       = "${coalesce(var.override_ami_name, local.k8s_settings["ami_name"])}"
   ami_owner      = "${coalesce(var.override_ami_owner, local.k8s_settings["ami_owner"])}"
   docker_version = "${local.k8s_settings["docker_version"]}"
+  etcd_version   = "${local.k8s_settings["etcd_version"]}"
 }
 
 locals {

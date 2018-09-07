@@ -16,6 +16,7 @@ data "template_file" "master_user_data_3" {
     master_count       = "${local.master_resource_count}"
     cluster_fqdn       = "${local.cluster_fqdn}"
     docker_version     = "${local.docker_version}"
+    etcd_version       = "${local.etcd_version}"
   }
 }
 
@@ -45,5 +46,11 @@ data "template_file" "master_user_data_5" {
     cni_file_name         = "${local.cni_file_name}"
     utils_hash            = "${local.utils_hash}"
     protokube_hash        = "${local.protokube_hash}"
+
+    master_etcd_manifests = <<MANIFEST
+etcdManifests:
+- s3://${var.kops_s3_bucket_id}/${local.cluster_fqdn}/manifests/etcd/main.yaml
+- s3://${var.kops_s3_bucket_id}/${local.cluster_fqdn}/manifests/etcd/events.yaml
+MANIFEST
   }
 }

@@ -31,9 +31,15 @@ kubeAPIServer:
   - ResourceQuota
   allowPrivileged: true
   anonymousAuth: false
+  disableBasicAuth: true
   apiServerCount: ${master_count}
   authorizationMode: RBAC
   cloudProvider: aws
+  etcdClusters:
+    events:
+      version: ${etcd_version}
+    main:
+      version: ${etcd_version}
   etcdServers:
   - http://127.0.0.1:4001
   etcdServersOverrides:
@@ -55,7 +61,7 @@ kubeAPIServer:
   - X-Remote-User
   securePort: 443
   serviceClusterIPRange: 100.64.0.0/13
-  storageBackend: etcd2
+  storageBackend: etcd3
 kubeControllerManager:
   allocateNodeCIDRs: true
   attachDetachReconcileSyncPeriod: 1m0s
