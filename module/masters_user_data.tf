@@ -17,6 +17,7 @@ data "template_file" "master_user_data_3" {
     cluster_fqdn       = "${local.cluster_fqdn}"
     docker_version     = "${local.docker_version}"
     etcd_version       = "${local.etcd_version}"
+    storage_backend    = "${local.storage_backend}"
   }
 }
 

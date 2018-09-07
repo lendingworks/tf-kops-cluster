@@ -61,7 +61,7 @@ kubeAPIServer:
   - X-Remote-User
   securePort: 443
   serviceClusterIPRange: 100.64.0.0/13
-  storageBackend: etcd3
+  storageBackend: ${storage_backend}
 kubeControllerManager:
   allocateNodeCIDRs: true
   attachDetachReconcileSyncPeriod: 1m0s
