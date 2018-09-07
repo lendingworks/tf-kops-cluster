@@ -159,30 +159,34 @@ resource "aws_ebs_volume" "etcd-events" {
   count             = "${local.master_resource_count}"
   availability_zone = "${element(local.az_names, count.index)}"
   size              = 20
-  type              = "gp2"
+  type              = "${var.etcd_volume_type}"
+  iops              = "${var.etcd_volume_piops}"
   encrypted         = "${var.use_encryption}"
 
-  tags = {
-    KubernetesCluster    = "${local.cluster_fqdn}"
-    Name                 = "${element(local.az_letters, count.index)}.etcd-events.${local.cluster_fqdn}"
-    "k8s.io/etcd/events" = "${element(local.az_letters, count.index)}/${local.etcd_azs}"
-    "k8s.io/role/master" = "1"
-  }
+  tags = "${map(
+    "KubernetesCluster", "${local.cluster_fqdn}",
+    "Name", "${element(local.az_letters, count.index)}.etcd-events.${local.cluster_fqdn}",
+    "k8s.io/etcd/events", "${element(local.az_letters, count.index)}/${local.etcd_azs}",
+    "k8s.io/role/master", "1",
+    "kubernetes.io/cluster/${var.cluster_fqdn}", "owned"
+  )}"
 }
 
 resource "aws_ebs_volume" "etcd-main" {
   count             = "${local.master_resource_count}"
   availability_zone = "${element(local.az_names, count.index)}"
   size              = 20
-  type              = "gp2"
-  encrypted         = false
+  type              = "${var.etcd_volume_type}"
+  iops              = "${var.etcd_volume_piops}"
+  encrypted         = "${var.use_encryption}"
 
-  tags = {
-    KubernetesCluster    = "${local.cluster_fqdn}"
-    Name                 = "${element(local.az_letters, count.index)}.etcd-main.${local.cluster_fqdn}"
-    "k8s.io/etcd/main"   = "${element(local.az_letters, count.index)}/${local.etcd_azs}"
-    "k8s.io/role/master" = "1"
-  }
+  tags = "${map(
+    "KubernetesCluster", "${local.cluster_fqdn}",
+    "Name", "${element(local.az_letters, count.index)}.etcd-main.${local.cluster_fqdn}",
+    "k8s.io/etcd/main", "${element(local.az_letters, count.index)}/${local.etcd_azs}",
+    "k8s.io/role/master", "1",
+    "kubernetes.io/cluster/${var.cluster_fqdn}", "owned"
+  )}"
 }
 
 resource "aws_cloudwatch_metric_alarm" "master_cpu" {
@@ -212,7 +216,7 @@ resource "aws_cloudwatch_metric_alarm" "ebs-wiops-etcd-events" {
   namespace           = "AWS/EBS"
   period              = "300"
   statistic           = "Sum"
-  threshold           = 8000
+  threshold           = "${var.etcd_volume_piops * 300}"
 
   dimensions {
     VolumeId = "${element(aws_ebs_volume.etcd-events.*.id, count.index)}"
@@ -263,7 +267,7 @@ resource "aws_cloudwatch_metric_alarm" "ebs-wiops-etcd-main" {
   namespace           = "AWS/EBS"
   period              = "300"
   statistic           = "Sum"
-  threshold           = 8000
+  threshold           = "${var.etcd_volume_piops * 300}"
 
   dimensions {
     VolumeId = "${element(aws_ebs_volume.etcd-main.*.id, count.index)}"
