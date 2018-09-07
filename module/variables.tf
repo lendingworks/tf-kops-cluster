@@ -154,3 +154,13 @@ variable "override_ami_name" {
 variable "override_ami_owner" {
   default = ""
 }
+
+# Volume type for the etcd vols.
+variable "etcd_volume_type" {
+  default = "gp2"
+}
+
+# Provisioned IOPS for the etcd vols, only used if 'etcd_volume_type' is 'io1'.
+variable "etcd_volume_piops" {
+  default = 30
+}
