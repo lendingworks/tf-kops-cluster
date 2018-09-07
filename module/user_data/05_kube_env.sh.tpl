@@ -14,7 +14,6 @@ ${kubernetes_master_tag}
 - _networking_cni
 channels:
 - s3://${kops_s3_bucket}/${cluster_fqdn}/addons/bootstrap-channel.yaml
-${master_etcd_manifests}
 protokubeImage:
   hash: ${protokube_hash}
   name: protokube:${kops_version}

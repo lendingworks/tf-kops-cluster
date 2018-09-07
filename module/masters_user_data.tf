@@ -47,11 +47,5 @@ data "template_file" "master_user_data_5" {
     cni_file_name         = "${local.cni_file_name}"
     utils_hash            = "${local.utils_hash}"
     protokube_hash        = "${local.protokube_hash}"
-
-    master_etcd_manifests = <<MANIFEST
-etcdManifests:
-- s3://${var.kops_s3_bucket_id}/${local.cluster_fqdn}/manifests/etcd/main.yaml
-- s3://${var.kops_s3_bucket_id}/${local.cluster_fqdn}/manifests/etcd/events.yaml
-MANIFEST
   }
 }

@@ -48,7 +48,6 @@ data "template_file" "node_user_data_5" {
     cni_file_name         = "${local.cni_file_name}"
     utils_hash            = "${local.utils_hash}"
     protokube_hash        = "${local.protokube_hash}"
-    master_etcd_manifests = ""
   }
 }
 
@@ -68,6 +67,5 @@ data "template_file" "node_user_data_5_spot" {
     cni_file_name         = "${local.cni_file_name}"
     utils_hash            = "${local.utils_hash}"
     protokube_hash        = "${local.protokube_hash}"
-    master_etcd_manifests = ""
   }
 }
