@@ -91,6 +91,8 @@ data "aws_iam_policy_document" "masters" {
     effect = "Allow"
 
     actions = [
+      "autoscaling:DescribeTags",
+      "autoscaling:DescribeAutoScalingInstances",
       "autoscaling:DescribeAutoScalingGroups",
       "autoscaling:DescribeLaunchConfigurations",
       "autoscaling:GetAsgForInstance",
