@@ -37,6 +37,7 @@ data "aws_iam_policy_document" "masters" {
     effect = "Allow"
 
     actions = [
+      "ec2:DescribeTags",
       "ec2:DescribeInstances",
       "ec2:DescribeRouteTables",
       "ec2:DescribeSecurityGroups",
