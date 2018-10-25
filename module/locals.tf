@@ -24,7 +24,28 @@ locals {
 }
 
 locals {
+  # Docker version can be looked up at https://github.com/kubernetes/kops/blob/master/nodeup/pkg/model/docker.go
+  # Protokube hash changes only when the kops version changes.
+  # Kubelet hash changes when the k8s version changes,
+  # Kubectl hash changes when the k8s version changes.
+  # CNI hash/filename change only when the major k8s version changes.
+  # Easiest way to get new hashes is to create a dummy cluster using kops and
+  # check user data.
   k8s_versions = {
+    "1.10.9" = {
+      kubelet_hash    = "aadc25f7a7497d91419b168e4cb06e16755e8916"
+      kubectl_hash    = "bf3914630fe45b4f9ec1bc5e56f10fb30047f958"
+      cni_hash        = "d595d3ded6499a64e8dac02466e2f5f2ce257c9f"
+      cni_file_name   = "cni-plugins-amd64-v0.6.0.tgz"
+      utils_hash      = "1903d30f87488f6e3550918283ff8aa1c5553471"
+      protokube_hash  = "139d69230bb029a419ca8e5a9be2f406d8e685c4"
+      docker_version  = "17.09.0"
+      ami_name        = "k8s-1.10-debian-stretch-amd64-hvm-ebs-2018-08-17"
+      ami_owner       = "383156758163"
+      storage_backend = "etcd3"
+      etcd_version    = "3.1.12"
+    }
+
     "1.10.7" = {
       kubelet_hash    = "83573a97738ae22aff41096d2260002697254f57"
       kubectl_hash    = "ab40b93f01b02657ed455b94bb9e6a73b0784501"
