@@ -164,3 +164,8 @@ variable "etcd_volume_type" {
 variable "etcd_volume_piops" {
   default = 30
 }
+
+# If TRUE, this will prevent the ASG from re-balancing itself across regions.
+variable "asg_prevent_rebalance" {
+  default = false
+}
