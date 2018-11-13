@@ -133,6 +133,6 @@ locals {
 }
 
 locals {
-  asg_do_rebalance      = []
-  asg_prevent_rebalance = ["AZRebalance"]
+  az_suspended_processes_raw = ["${var.asg_prevent_rebalance ? "AZRebalance" : ""}"]
+  az_suspended_processes     = "${compact(local.az_suspended_processes_raw)}"
 }
