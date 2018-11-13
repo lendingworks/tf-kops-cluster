@@ -131,3 +131,8 @@ locals {
 
   cluster_autoscaler_spot_enabled = "${signum(local.cluster_autoscaler_both + local.cluster_autoscaler_spot_only)}"
 }
+
+locals {
+  asg_do_rebalance      = []
+  asg_prevent_rebalance = ["AZRebalance"]
+}
