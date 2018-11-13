@@ -9,7 +9,7 @@ resource "aws_autoscaling_group" "node" {
   desired_capacity     = "${var.enabled ? var.node_asg_desired : 0}"
   vpc_zone_identifier  = ["${split(",", local.k8s_subnet_ids)}"]
   target_group_arns    = ["${var.node_alb_ingress_target_group_arns}"]
-  suspended_processes  = "${var.asg_prevent_rebalance ? local.asg_prevent_rebalance : local.asg_do_rebalance}"
+  suspended_processes  = "${local.az_suspended_processes}"
 
   # Ignore changes to autoscaling group desired as it is managed by the
   # Kubernetes cluster autoscaler addon
