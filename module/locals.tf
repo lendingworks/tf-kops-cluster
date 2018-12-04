@@ -32,6 +32,20 @@ locals {
   # Easiest way to get new hashes is to create a dummy cluster using kops and
   # check user data.
   k8s_versions = {
+    "1.10.11" = {
+      kubelet_hash    = "dbe06f92f4d1878482af0188070c6c0bca5d5e65"
+      kubectl_hash    = "9ee2f78491cbf8dc76d644c23cfc8c955c34d55d"
+      cni_hash        = "d595d3ded6499a64e8dac02466e2f5f2ce257c9f"
+      cni_file_name   = "cni-plugins-amd64-v0.6.0.tgz"
+      utils_hash      = "1903d30f87488f6e3550918283ff8aa1c5553471"
+      protokube_hash  = "139d69230bb029a419ca8e5a9be2f406d8e685c4"
+      docker_version  = "17.09.0"
+      ami_name        = "k8s-1.10-debian-stretch-amd64-hvm-ebs-2018-08-17"
+      ami_owner       = "383156758163"
+      storage_backend = "etcd3"
+      etcd_version    = "3.1.12"
+    }
+
     "1.10.9" = {
       kubelet_hash    = "aadc25f7a7497d91419b168e4cb06e16755e8916"
       kubectl_hash    = "bf3914630fe45b4f9ec1bc5e56f10fb30047f958"
@@ -44,34 +58,6 @@ locals {
       ami_owner       = "383156758163"
       storage_backend = "etcd3"
       etcd_version    = "3.1.12"
-    }
-
-    "1.10.7" = {
-      kubelet_hash    = "83573a97738ae22aff41096d2260002697254f57"
-      kubectl_hash    = "ab40b93f01b02657ed455b94bb9e6a73b0784501"
-      cni_hash        = "d595d3ded6499a64e8dac02466e2f5f2ce257c9f"
-      cni_file_name   = "cni-plugins-amd64-v0.6.0.tgz"
-      utils_hash      = "1903d30f87488f6e3550918283ff8aa1c5553471"
-      protokube_hash  = "139d69230bb029a419ca8e5a9be2f406d8e685c4"
-      docker_version  = "17.09.0"
-      ami_name        = "debian-stretch-hvm-x86_64-gp2-2018-08-20-85640"
-      ami_owner       = "379101102735"
-      storage_backend = "etcd3"
-      etcd_version    = "3.1.12"
-    }
-
-    "1.10.3" = {
-      kubelet_hash    = "4ffe05e3cdb9291e56e0268ea2b51047761bf7ad"
-      kubectl_hash    = "94f996d645e74634a4be67bbb5417f892774230b"
-      cni_hash        = "d595d3ded6499a64e8dac02466e2f5f2ce257c9f"
-      cni_file_name   = "cni-plugins-amd64-v0.6.0.tgz"
-      utils_hash      = "1903d30f87488f6e3550918283ff8aa1c5553471"
-      protokube_hash  = "139d69230bb029a419ca8e5a9be2f406d8e685c4"
-      docker_version  = "17.09.0"
-      ami_name        = "debian-stretch-hvm-x86_64-gp2-2018-08-20-85640"
-      ami_owner       = "379101102735"
-      storage_backend = "etcd2"
-      etcd_version    = "2.2.1"
     }
 
     "1.9.8" = {
