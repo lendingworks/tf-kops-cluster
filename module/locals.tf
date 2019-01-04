@@ -1,6 +1,6 @@
 locals {
   # Currently support kops version
-  supported_kops_version = "1.10.0"
+  supported_kops_version = "1.11.0"
 
   # Removes the last character of the FQDN if it is '.'
   cluster_fqdn = "${replace(var.cluster_fqdn, "/\\.$/", "")}"
@@ -32,6 +32,20 @@ locals {
   # Easiest way to get new hashes is to create a dummy cluster using kops and
   # check user data.
   k8s_versions = {
+    "1.11.6" = {
+      kubelet_hash    = "a006b4680640e5c88742e22b904623a77257f416"
+      kubectl_hash    = "c3f7fbab5ba39e3ec20b32f0e7bcad6cc0704792"
+      cni_hash        = "d595d3ded6499a64e8dac02466e2f5f2ce257c9f"
+      cni_file_name   = "cni-plugins-amd64-v0.6.0.tgz"
+      utils_hash      = "b16b5367e05bad082f416f786c7f8813f7794630"
+      protokube_hash  = "725c2de47755544a9aa349e27ed9900d195f0ceb"
+      docker_version  = "18.06.1"
+      ami_name        = "k8s-1.11-debian-stretch-amd64-hvm-ebs-2018-08-17"
+      ami_owner       = "383156758163"
+      storage_backend = "etcd3"
+      etcd_version    = "3.1.12"
+    }
+
     "1.10.11" = {
       kubelet_hash    = "dbe06f92f4d1878482af0188070c6c0bca5d5e65"
       kubectl_hash    = "9ee2f78491cbf8dc76d644c23cfc8c955c34d55d"
