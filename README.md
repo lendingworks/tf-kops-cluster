@@ -45,5 +45,6 @@ Kops version: 1.10.0
 
 Supported Kubernetes versions:
   - 1.9.8
-  - 1.10.3
-  - 1.10.7 _(recommended)_
+  - 1.10.9
+  - 1.10.11
+  - 1.11.6 _(recommended)_
