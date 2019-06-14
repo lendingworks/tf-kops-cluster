@@ -47,4 +47,5 @@ Supported Kubernetes versions:
   - 1.9.8
   - 1.10.9
   - 1.10.11
-  - 1.11.6 _(recommended)_
+  - 1.11.6
+  - 1.12.9 _(recommended)_
