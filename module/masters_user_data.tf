@@ -40,6 +40,11 @@ data "template_file" "master_user_data_5" {
     cluster_fqdn          = "${local.cluster_fqdn}"
     kops_s3_bucket        = "${var.kops_s3_bucket_id}"
     kubernetes_master_tag = "- _kubernetes_master"
+    etcd_manifests        = <<MANIFEST
+etcdManifests:
+- s3://${var.kops_s3_bucket_id}/${local.cluster_fqdn}/manifests/etcd/main.yaml
+- s3://${var.kops_s3_bucket_id}/${local.cluster_fqdn}/manifests/etcd/events.yaml
+MANIFEST
     instance_group        = "master-${element(local.az_names, count.index)}"
     kubelet_hash          = "${local.kubelet_hash}"
     kubectl_hash          = "${local.kubectl_hash}"

@@ -4,7 +4,6 @@ ensure-install-dir
 cat > cluster_spec.yaml << '__EOF_CLUSTER_SPEC'
 cloudConfig: null
 docker:
-  bridge: ""
   ipMasq: false
   ipTables: false
   logDriver: json-file
@@ -12,13 +11,26 @@ docker:
   logOpt:
   - max-size=10m
   - max-file=5
-  storage: overlay,aufs
+  storage: overlay2,overlay,aufs
   version: ${docker_version}
 encryptionConfig: null
+etcdClusters:
+  events:
+    cpuRequest: 100m
+    memoryRequest: 100Mi
+    version: ${etcd_version}
+  main:
+    cpuRequest: 200m
+    memoryRequest: 100Mi
+    version: ${etcd_version}
 kubeAPIServer:
-  address: 127.0.0.1
-  admissionControl:
-  - Initializers
+  allowPrivileged: true
+  anonymousAuth: false
+  apiServerCount: ${master_count}
+  authorizationMode: RBAC
+  cloudProvider: aws
+  bindAddress: 0.0.0.0
+  enableAdmissionPlugins:
   - NamespaceLifecycle
   - LimitRanger
   - ServiceAccount
@@ -29,22 +41,13 @@ kubeAPIServer:
   - ValidatingAdmissionWebhook
   - NodeRestriction
   - ResourceQuota
-  allowPrivileged: true
-  anonymousAuth: false
   disableBasicAuth: true
-  apiServerCount: ${master_count}
-  authorizationMode: RBAC
-  cloudProvider: aws
-  etcdClusters:
-    events:
-      version: ${etcd_version}
-    main:
-      version: ${etcd_version}
   etcdServers:
   - http://127.0.0.1:4001
   etcdServersOverrides:
   - /events#http://127.0.0.1:4002
-  image: gcr.io/google_containers/kube-apiserver:v${kubernetes_version}
+  image: k8s.gcr.io/kube-apiserver:v${kubernetes_version}
+  insecureBindAddress: 127.0.0.1
   insecurePort: 8080
   kubeletPreferredAddressTypes:
   - InternalIP
@@ -69,7 +72,7 @@ kubeControllerManager:
   clusterCIDR: 100.96.0.0/11
   clusterName: ${cluster_fqdn}
   configureCloudRoutes: false
-  image: gcr.io/google_containers/kube-controller-manager:v${kubernetes_version}
+  image: k8s.gcr.io/kube-controller-manager:v${kubernetes_version}
   leaderElection:
     leaderElect: true
   logLevel: 2
@@ -77,17 +80,17 @@ kubeControllerManager:
 kubeProxy:
   clusterCIDR: 100.96.0.0/11
   cpuRequest: 100m
-  featureGates: null
   hostnameOverride: '@aws'
-  image: gcr.io/google_containers/kube-proxy:v${kubernetes_version}
+  image: k8s.gcr.io/kube-proxy:v${kubernetes_version}
   logLevel: 2
 kubeScheduler:
-  image: gcr.io/google_containers/kube-scheduler:v${kubernetes_version}
+  image: k8s.gcr.io/kube-scheduler:v${kubernetes_version}
   leaderElection:
     leaderElect: true
   logLevel: 2
 kubelet:
   allowPrivileged: true
+  anonymousAuth: false
   cgroupRoot: /
   cloudProvider: aws
   clusterDNS: 100.64.0.10
@@ -101,11 +104,11 @@ kubelet:
   logLevel: 2
   networkPluginName: cni
   nonMasqueradeCIDR: 100.64.0.0/10
-  podInfraContainerImage: gcr.io/google_containers/pause-amd64:3.0
+  podInfraContainerImage: k8s.gcr.io/pause-amd64:3.0
   podManifestPath: /etc/kubernetes/manifests
-  requireKubeconfig: true
 masterKubelet:
   allowPrivileged: true
+  anonymousAuth: false
   cgroupRoot: /
   cloudProvider: aws
   clusterDNS: 100.64.0.10
@@ -119,9 +122,8 @@ masterKubelet:
   logLevel: 2
   networkPluginName: cni
   nonMasqueradeCIDR: 100.64.0.0/10
-  podInfraContainerImage: gcr.io/google_containers/pause-amd64:3.0
+  podInfraContainerImage: k8s.gcr.io/pause-amd64:3.0
   podManifestPath: /etc/kubernetes/manifests
   registerSchedulable: false
-  requireKubeconfig: true
 
 __EOF_CLUSTER_SPEC

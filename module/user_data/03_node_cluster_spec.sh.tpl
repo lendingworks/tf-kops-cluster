@@ -4,7 +4,6 @@ ensure-install-dir
 cat > cluster_spec.yaml << '__EOF_CLUSTER_SPEC'
 cloudConfig: null
 docker:
-  bridge: ""
   ipMasq: false
   ipTables: false
   logDriver: json-file
@@ -12,17 +11,17 @@ docker:
   logOpt:
   - max-size=10m
   - max-file=5
-  storage: overlay,aufs
+  storage: overlay2,overlay,aufs
   version: ${docker_version}
 kubeProxy:
   clusterCIDR: 100.96.0.0/11
   cpuRequest: 100m
-  featureGates: null
   hostnameOverride: '@aws'
-  image: gcr.io/google_containers/kube-proxy:v${kubernetes_version}
+  image: k8s.gcr.io/kube-proxy:v${kubernetes_version}
   logLevel: 2
 kubelet:
   allowPrivileged: true
+  anonymousAuth: false
   cgroupRoot: /
   cloudProvider: aws
   clusterDNS: 100.64.0.10
@@ -36,8 +35,7 @@ kubelet:
   logLevel: 2
   networkPluginName: cni
   nonMasqueradeCIDR: 100.64.0.0/10
-  podInfraContainerImage: gcr.io/google_containers/pause-amd64:3.0
+  podInfraContainerImage: k8s.gcr.io/pause-amd64:3.0
   podManifestPath: /etc/kubernetes/manifests
-  requireKubeconfig: true
 
 __EOF_CLUSTER_SPEC
