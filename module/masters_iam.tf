@@ -57,6 +57,7 @@ data "aws_iam_policy_document" "masters" {
       "ec2:CreateSecurityGroup",
       "ec2:CreateTags",
       "ec2:CreateVolume",
+      "ec2:DescribeVolumesModifications",
       "ec2:ModifyInstanceAttribute",
       "ec2:ModifyVolume",
     ]
@@ -71,6 +72,7 @@ data "aws_iam_policy_document" "masters" {
     actions = [
       "ec2:AttachVolume",
       "ec2:AuthorizeSecurityGroupIngress",
+      "ec2:CreateRoute",
       "ec2:DeleteRoute",
       "ec2:DeleteSecurityGroup",
       "ec2:DeleteVolume",
@@ -97,6 +99,7 @@ data "aws_iam_policy_document" "masters" {
       "autoscaling:DescribeAutoScalingGroups",
       "autoscaling:DescribeLaunchConfigurations",
       "autoscaling:GetAsgForInstance",
+      "ec2:DescribeLaunchTemplateVersions"
     ]
 
     resources = ["*"]
@@ -126,6 +129,7 @@ data "aws_iam_policy_document" "masters" {
     effect = "Allow"
 
     actions = [
+      "elasticloadbalancing:AddTags",
       "elasticloadbalancing:AttachLoadBalancerToSubnets",
       "elasticloadbalancing:ApplySecurityGroupsToLoadBalancer",
       "elasticloadbalancing:CreateLoadBalancer",
@@ -141,6 +145,10 @@ data "aws_iam_policy_document" "masters" {
       "elasticloadbalancing:ModifyLoadBalancerAttributes",
       "elasticloadbalancing:RegisterInstancesWithLoadBalancer",
       "elasticloadbalancing:SetLoadBalancerPoliciesForBackendServer",
+      "elasticloadbalancing:DescribeListeners",
+      "elasticloadbalancing:DescribeLoadBalancerPolicies",
+      "elasticloadbalancing:DescribeTargetGroups",
+      "elasticloadbalancing:DescribeTargetHealth",
     ]
 
     resources = ["*"]
@@ -164,6 +172,7 @@ data "aws_iam_policy_document" "masters" {
 
     actions = [
       "s3:GetBucketLocation",
+      "s3:GetEncryptionConfiguration",
       "s3:ListBucket",
     ]
 
@@ -179,6 +188,22 @@ data "aws_iam_policy_document" "masters" {
     ]
 
     resources = ["${var.kops_s3_bucket_arn}/${local.cluster_fqdn}/*"]
+  }
+
+  statement {
+    sid    = "kopsK8sS3MasterBucketEtcdWrite"
+    effect = "Allow"
+
+    actions = [
+      "s3:GetObject",
+      "s3:DeleteObject",
+      "s3:PutObject",
+    ]
+
+    resources = [
+      "${var.kops_s3_bucket_arn}/${local.cluster_fqdn}/backups/etcd/main/*",
+      "${var.kops_s3_bucket_arn}/${local.cluster_fqdn}/backups/etcd/events/*",
+    ]
   }
 
   statement {
