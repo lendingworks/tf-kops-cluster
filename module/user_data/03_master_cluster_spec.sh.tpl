@@ -91,6 +91,8 @@ kubeScheduler:
 kubelet:
   allowPrivileged: true
   anonymousAuth: false
+  authorizationMode: Webhook
+  authenticationTokenWebhook: true
   cgroupRoot: /
   cloudProvider: aws
   clusterDNS: 100.64.0.10
@@ -109,6 +111,8 @@ kubelet:
 masterKubelet:
   allowPrivileged: true
   anonymousAuth: false
+  authorizationMode: Webhook
+  authenticationTokenWebhook: true
   cgroupRoot: /
   cloudProvider: aws
   clusterDNS: 100.64.0.10
