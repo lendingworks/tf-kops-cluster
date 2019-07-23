@@ -6,6 +6,8 @@ data "aws_availability_zones" "available" {}
 
 data "aws_region" "current" {}
 
+data "aws_caller_identity" "current" {}
+
 data "aws_ami" "k8s_ami" {
   most_recent = true
 
@@ -23,4 +25,6 @@ data "aws_ami" "k8s_ami" {
     name   = "state"
     values = ["available"]
   }
+
+  owners = ["${data.aws_caller_identity.current.account_id}"]
 }
