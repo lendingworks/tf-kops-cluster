@@ -23,4 +23,6 @@ data "aws_ami" "k8s_ami" {
     name   = "state"
     values = ["available"]
   }
+
+  owners = ["${local.ami_owner}"]
 }
