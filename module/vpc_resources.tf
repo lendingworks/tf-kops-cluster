@@ -15,7 +15,6 @@ resource "aws_subnet" "public" {
 }
 
 resource "aws_route_table" "public" {
-  count  = length(local.az_names)
   vpc_id = var.vpc_id
 
   route {
@@ -24,7 +23,7 @@ resource "aws_route_table" "public" {
   }
 
   tags = {
-    "Name"                                      = "${element(local.az_names, count.index)}.${var.cluster_fqdn}"
+    "Name"                                      = var.cluster_fqdn
     "KubernetesCluster"                         = local.cluster_fqdn
     "kubernetes.io/kops/role"                   = "public"
     "kubernetes.io/cluster/${var.cluster_fqdn}" = "owned"
