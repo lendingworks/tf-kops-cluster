@@ -15,6 +15,7 @@ resource "aws_subnet" "public" {
 }
 
 resource "aws_route_table" "public" {
+  count  = length(local.az_names)
   vpc_id = var.vpc_id
 
   route {
