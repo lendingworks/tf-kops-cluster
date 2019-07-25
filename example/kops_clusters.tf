@@ -19,7 +19,7 @@ module "cluster1" {
   master_instance_type      = "t2.small"
   node_instance_type        = "t2.small"
   internet_gateway_id       = aws_internet_gateway.public.id
-  public_subnet_cidr_blocks = [local.cluster1_public_subnet_cidr_blocks]
+  public_subnet_cidr_blocks = local.cluster1_public_subnet_cidr_blocks
   kops_dns_mode             = "private"
 }
 
@@ -44,8 +44,8 @@ module "cluster2" {
   master_instance_type      = "t2.small"
   node_instance_type        = "t2.small"
   internet_gateway_id       = aws_internet_gateway.public.id
-  public_subnet_cidr_blocks = [local.cluster2_public_subnet_cidr_blocks]
-  private_subnet_ids        = [aws_subnet.nat_private.*.id]
+  public_subnet_cidr_blocks = local.cluster2_public_subnet_cidr_blocks
+  private_subnet_ids        = aws_subnet.nat_private.*.id
   kops_dns_mode             = "private"
   kubernetes_networking     = "flannel"
 }
