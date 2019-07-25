@@ -11,13 +11,13 @@ locals {
   az_letters     = split(",", local.az_letters_csv)
 
   # Number master resources to create. Defaults to the number of AZs in the region but should be 1 for regions with odd number of AZs.
-  master_resource_count = var.force_single_master == 1 ? 1 : length(local.az_names)
+  master_resource_count = var.force_single_master ? 1 : length(local.az_names)
 
   # Master AZs is used in the `kops create cluster` command
-  master_azs = var.force_single_master == 1 ? element(local.az_names, 0) : join(",", local.az_names)
+  master_azs = var.force_single_master ? element(local.az_names, 0) : join(",", local.az_names)
 
   # etcd AZs is used in tags for the master EBS volumes
-  etcd_azs = var.force_single_master == 1 ? element(local.az_letters, 0) : local.az_letters_csv
+  etcd_azs = var.force_single_master ? element(local.az_letters, 0) : local.az_letters_csv
 
   # Subnet IDs to be used by k8s ASGs
   k8s_subnet_ids = length(var.private_subnet_ids) == 0 ? join(",", aws_subnet.public.*.id) : join(",", var.private_subnet_ids)
