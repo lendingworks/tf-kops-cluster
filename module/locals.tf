@@ -119,8 +119,7 @@ locals {
 }
 
 locals {
-  has_spot_price   = var.max_price_spot == "" ? 0 : 1
-  spot_enabled     = local.has_spot_price && var.enabled
+  spot_enabled     = var.max_price_spot != "" && var.enabled
   spot_asg_min     = var.spot_asg_min == "" ? var.node_asg_min : var.spot_asg_min
   spot_asg_max     = var.spot_asg_max == "" ? var.node_asg_max : var.spot_asg_max
   spot_asg_desired = var.spot_asg_desired == "" ? var.node_asg_desired : var.spot_asg_desired
