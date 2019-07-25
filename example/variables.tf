@@ -3,3 +3,4 @@
 variable "domain_name" {
   default = "my-public-domain.com"
 }
+

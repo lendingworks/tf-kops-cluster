@@ -61,7 +61,7 @@ resource "aws_vpc" "main_vpc" {
   enable_dns_support   = true
   instance_tenancy     = "default"
 
-  tags {
+  tags = {
     Name = "main_vpc"
   }
 }
@@ -69,110 +69,111 @@ resource "aws_vpc" "main_vpc" {
 resource "aws_route53_zone" "vpc_internal_zone" {
   name          = "local.vpc"
   comment       = "Internal zone"
-  vpc_id        = "${aws_vpc.main_vpc.id}"
+  vpc_id        = aws_vpc.main_vpc.id
   force_destroy = true
 }
 
 resource "aws_route53_zone" "k8s_zone" {
-  name          = "${var.domain_name}"
-  vpc_id        = "${aws_vpc.main_vpc.id}"
+  name          = var.domain_name
+  vpc_id        = aws_vpc.main_vpc.id
   force_destroy = true
 }
 
 resource "aws_vpc_dhcp_options" "dhcp_options" {
-  domain_name         = "${aws_route53_zone.vpc_internal_zone.name}"
+  domain_name         = aws_route53_zone.vpc_internal_zone.name
   domain_name_servers = ["AmazonProvidedDNS"]
 
-  tags {
+  tags = {
     Name = "main_vpc_dhcp_options"
   }
 }
 
 resource "aws_vpc_dhcp_options_association" "dhcp_options_association" {
-  vpc_id          = "${aws_vpc.main_vpc.id}"
-  dhcp_options_id = "${aws_vpc_dhcp_options.dhcp_options.id}"
+  vpc_id          = aws_vpc.main_vpc.id
+  dhcp_options_id = aws_vpc_dhcp_options.dhcp_options.id
 }
 
 resource "aws_internet_gateway" "public" {
-  vpc_id = "${aws_vpc.main_vpc.id}"
+  vpc_id = aws_vpc.main_vpc.id
 }
 
 resource "aws_route_table" "public" {
-  vpc_id = "${aws_vpc.main_vpc.id}"
+  vpc_id = aws_vpc.main_vpc.id
 
   route {
     cidr_block = "0.0.0.0/0"
-    gateway_id = "${aws_internet_gateway.public.id}"
+    gateway_id = aws_internet_gateway.public.id
   }
 
-  tags {
+  tags = {
     "Name" = "public"
   }
 }
 
 resource "aws_subnet" "public" {
-  count                   = "${length(data.aws_availability_zones.available.names)}"
-  vpc_id                  = "${aws_vpc.main_vpc.id}"
-  cidr_block              = "${element(local.public_cidr_blocks, count.index)}"
-  availability_zone       = "${element(data.aws_availability_zones.available.names, count.index)}"
+  count                   = length(data.aws_availability_zones.available.names)
+  vpc_id                  = aws_vpc.main_vpc.id
+  cidr_block              = element(local.public_cidr_blocks, count.index)
+  availability_zone       = element(data.aws_availability_zones.available.names, count.index)
   map_public_ip_on_launch = true
 
-  tags {
+  tags = {
     "Name" = "public ${element(data.aws_availability_zones.available.names, count.index)}"
   }
 }
 
 resource "aws_route_table_association" "public" {
-  count          = "${length(data.aws_availability_zones.available.names)}"
-  route_table_id = "${aws_route_table.public.id}"
-  subnet_id      = "${element(aws_subnet.public.*.id, count.index)}"
+  count          = length(data.aws_availability_zones.available.names)
+  route_table_id = aws_route_table.public.id
+  subnet_id      = element(aws_subnet.public.*.id, count.index)
 }
 
 # VPC resources related to private subnets with NAT gateways
 
 resource "aws_subnet" "nat_private" {
-  count                   = "${length(data.aws_availability_zones.available.names)}"
-  vpc_id                  = "${aws_vpc.main_vpc.id}"
-  cidr_block              = "${element(local.nat_private_cidr_blocks, count.index)}"
-  availability_zone       = "${element(data.aws_availability_zones.available.names, count.index)}"
+  count                   = length(data.aws_availability_zones.available.names)
+  vpc_id                  = aws_vpc.main_vpc.id
+  cidr_block              = element(local.nat_private_cidr_blocks, count.index)
+  availability_zone       = element(data.aws_availability_zones.available.names, count.index)
   map_public_ip_on_launch = false
 
-  tags {
+  tags = {
     "Name" = "NAT private ${element(data.aws_availability_zones.available.names, count.index)}"
   }
 }
 
 resource "aws_route_table" "nat_private" {
-  count  = "${length(data.aws_availability_zones.available.names)}"
-  vpc_id = "${aws_vpc.main_vpc.id}"
+  count  = length(data.aws_availability_zones.available.names)
+  vpc_id = aws_vpc.main_vpc.id
 
   route {
     cidr_block     = "0.0.0.0/0"
-    nat_gateway_id = "${element(aws_nat_gateway.nat_gateway.*.id, count.index)}"
+    nat_gateway_id = element(aws_nat_gateway.nat_gateway.*.id, count.index)
   }
 
-  tags {
+  tags = {
     "Name" = "NAT private ${element(data.aws_availability_zones.available.names, count.index)}"
   }
 }
 
 resource "aws_eip" "nat_gateway" {
-  count = "${length(data.aws_availability_zones.available.names)}"
+  count = length(data.aws_availability_zones.available.names)
   vpc   = true
 }
 
 resource "aws_nat_gateway" "nat_gateway" {
-  count         = "${length(data.aws_availability_zones.available.names)}"
-  allocation_id = "${element(aws_eip.nat_gateway.*.id, count.index)}"
-  subnet_id     = "${element(aws_subnet.public.*.id, count.index)}"
+  count         = length(data.aws_availability_zones.available.names)
+  allocation_id = element(aws_eip.nat_gateway.*.id, count.index)
+  subnet_id     = element(aws_subnet.public.*.id, count.index)
 
-  tags {
+  tags = {
     "Name" = "NAT ${element(data.aws_availability_zones.available.names, count.index)}"
   }
 }
 
 resource "aws_route_table_association" "nat_private" {
-  count          = "${length(data.aws_availability_zones.available.names)}"
-  route_table_id = "${element(aws_route_table.nat_private.*.id, count.index)}"
-  subnet_id      = "${element(aws_subnet.nat_private.*.id, count.index)}"
+  count          = length(data.aws_availability_zones.available.names)
+  route_table_id = element(aws_route_table.nat_private.*.id, count.index)
+  subnet_id      = element(aws_subnet.nat_private.*.id, count.index)
 }
+

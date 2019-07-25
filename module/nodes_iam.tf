@@ -1,11 +1,11 @@
 resource "aws_iam_instance_profile" "nodes" {
   name = "nodes.${var.cluster_fqdn}"
-  role = "${aws_iam_role.nodes.name}"
+  role = aws_iam_role.nodes.name
 }
 
 resource "aws_iam_role" "nodes" {
   name               = "nodes.${var.cluster_fqdn}"
-  assume_role_policy = "${data.aws_iam_policy_document.assume_role_policy_nodes.json}"
+  assume_role_policy = data.aws_iam_policy_document.assume_role_policy_nodes.json
 }
 
 data "aws_iam_policy_document" "assume_role_policy_nodes" {
@@ -21,14 +21,14 @@ data "aws_iam_policy_document" "assume_role_policy_nodes" {
 }
 
 resource "aws_iam_role_policy_attachment" "nodes" {
-  policy_arn = "${aws_iam_policy.nodes.arn}"
-  role       = "${aws_iam_role.nodes.name}"
+  policy_arn = aws_iam_policy.nodes.arn
+  role       = aws_iam_role.nodes.name
 }
 
 resource "aws_iam_policy" "nodes" {
   name        = "nodes.${var.cluster_fqdn}"
   description = "Kubernetes cluster ${var.cluster_name} nodes instances"
-  policy      = "${data.aws_iam_policy_document.nodes.json}"
+  policy      = data.aws_iam_policy_document.nodes.json
 }
 
 data "aws_iam_policy_document" "nodes" {
@@ -48,7 +48,7 @@ data "aws_iam_policy_document" "nodes" {
       "s3:ListBucket",
     ]
 
-    resources = ["${var.kops_s3_bucket_arn}"]
+    resources = [var.kops_s3_bucket_arn]
   }
 
   statement {
@@ -60,7 +60,7 @@ data "aws_iam_policy_document" "nodes" {
     ]
 
     resources = [
-      "${var.kops_s3_bucket_arn}",
+      var.kops_s3_bucket_arn,
       "${var.kops_s3_bucket_arn}/${local.cluster_fqdn}/addons/*",
       "${var.kops_s3_bucket_arn}/${local.cluster_fqdn}/cluster.spec",
       "${var.kops_s3_bucket_arn}/${local.cluster_fqdn}/config",
@@ -98,3 +98,4 @@ data "aws_iam_policy_document" "nodes" {
     resources = ["*"]
   }
 }
+

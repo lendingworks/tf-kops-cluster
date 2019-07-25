@@ -1,6 +1,6 @@
 resource "aws_security_group" "allow_ssh" {
   name        = "allow_ssh"
-  vpc_id      = "${aws_vpc.main_vpc.id}"
+  vpc_id      = aws_vpc.main_vpc.id
   description = "Allows SSH access from everywhere"
 
   ingress {
@@ -17,14 +17,14 @@ resource "aws_security_group" "allow_ssh" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  tags {
+  tags = {
     Name = "allow_ssh"
   }
 }
 
 resource "aws_security_group" "allow_http" {
   name        = "allow_http_s"
-  vpc_id      = "${aws_vpc.main_vpc.id}"
+  vpc_id      = aws_vpc.main_vpc.id
   description = "Allows HTTP/S access from everywhere"
 
   ingress {
@@ -48,7 +48,8 @@ resource "aws_security_group" "allow_http" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  tags {
+  tags = {
     Name = "allow_http"
   }
 }
+

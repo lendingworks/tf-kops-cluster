@@ -3,24 +3,24 @@ locals {
   supported_kops_version = "1.12.1"
 
   # Removes the last character of the FQDN if it is '.'
-  cluster_fqdn = "${replace(var.cluster_fqdn, "/\\.$/", "")}"
+  cluster_fqdn = replace(var.cluster_fqdn, "/\\.$/", "")
 
   # AZ names and letters are used in tags and resources names
-  az_names       = "${sort(data.aws_availability_zones.available.names)}"
-  az_letters_csv = "${replace(join(",", local.az_names), data.aws_region.current.name, "")}"
-  az_letters     = "${split(",", local.az_letters_csv)}"
+  az_names       = sort(data.aws_availability_zones.available.names)
+  az_letters_csv = replace(join(",", local.az_names), data.aws_region.current.name, "")
+  az_letters     = split(",", local.az_letters_csv)
 
   # Number master resources to create. Defaults to the number of AZs in the region but should be 1 for regions with odd number of AZs.
-  master_resource_count = "${var.force_single_master == 1 ? 1 : length(local.az_names)}"
+  master_resource_count = var.force_single_master == 1 ? 1 : length(local.az_names)
 
   # Master AZs is used in the `kops create cluster` command
-  master_azs = "${var.force_single_master == 1 ? element(local.az_names, 0) : join(",", local.az_names)}"
+  master_azs = var.force_single_master == 1 ? element(local.az_names, 0) : join(",", local.az_names)
 
   # etcd AZs is used in tags for the master EBS volumes
-  etcd_azs = "${var.force_single_master == 1 ? element(local.az_letters, 0) : local.az_letters_csv}"
+  etcd_azs = var.force_single_master == 1 ? element(local.az_letters, 0) : local.az_letters_csv
 
   # Subnet IDs to be used by k8s ASGs
-  k8s_subnet_ids = "${length(var.private_subnet_ids) == 0 ? join(",", aws_subnet.public.*.id) : join(",", var.private_subnet_ids)}"
+  k8s_subnet_ids = length(var.private_subnet_ids) == 0 ? join(",", aws_subnet.public.*.id) : join(",", var.private_subnet_ids)
 }
 
 locals {
@@ -45,7 +45,6 @@ locals {
       storage_backend = "etcd3"
       etcd_version    = "3.2.24"
     }
-
     "1.11.6" = {
       kubelet_hash    = "a006b4680640e5c88742e22b904623a77257f416"
       kubectl_hash    = "c3f7fbab5ba39e3ec20b32f0e7bcad6cc0704792"
@@ -59,7 +58,6 @@ locals {
       storage_backend = "etcd3"
       etcd_version    = "3.1.12"
     }
-
     "1.10.11" = {
       kubelet_hash    = "dbe06f92f4d1878482af0188070c6c0bca5d5e65"
       kubectl_hash    = "9ee2f78491cbf8dc76d644c23cfc8c955c34d55d"
@@ -73,7 +71,6 @@ locals {
       storage_backend = "etcd3"
       etcd_version    = "3.1.12"
     }
-
     "1.10.9" = {
       kubelet_hash    = "aadc25f7a7497d91419b168e4cb06e16755e8916"
       kubectl_hash    = "bf3914630fe45b4f9ec1bc5e56f10fb30047f958"
@@ -87,7 +84,6 @@ locals {
       storage_backend = "etcd3"
       etcd_version    = "3.1.12"
     }
-
     "1.9.8" = {
       kubelet_hash    = "6468397888494efe4a32e6bd96700ba6a86e635a"
       kubectl_hash    = "9a3537a7d95f1beec55e2fae082c364f6b91fdc0"
@@ -105,48 +101,53 @@ locals {
 }
 
 locals {
-  k8s_settings = "${local.k8s_versions["${var.kubernetes_version}"]}"
+  k8s_settings = local.k8s_versions[var.kubernetes_version]
 }
 
 locals {
-  kubelet_hash    = "${local.k8s_settings["kubelet_hash"]}"
-  kubectl_hash    = "${local.k8s_settings["kubectl_hash"]}"
-  cni_hash        = "${local.k8s_settings["cni_hash"]}"
-  cni_file_name   = "${local.k8s_settings["cni_file_name"]}"
-  utils_hash      = "${local.k8s_settings["utils_hash"]}"
-  protokube_hash  = "${local.k8s_settings["protokube_hash"]}"
-  ami_name        = "${coalesce(var.override_ami_name, local.k8s_settings["ami_name"])}"
-  ami_owner       = "${coalesce(var.override_ami_owner, local.k8s_settings["ami_owner"])}"
-  docker_version  = "${local.k8s_settings["docker_version"]}"
-  storage_backend = "${local.k8s_settings["storage_backend"]}"
-  etcd_version    = "${local.k8s_settings["etcd_version"]}"
+  kubelet_hash    = local.k8s_settings["kubelet_hash"]
+  kubectl_hash    = local.k8s_settings["kubectl_hash"]
+  cni_hash        = local.k8s_settings["cni_hash"]
+  cni_file_name   = local.k8s_settings["cni_file_name"]
+  utils_hash      = local.k8s_settings["utils_hash"]
+  protokube_hash  = local.k8s_settings["protokube_hash"]
+  ami_name        = coalesce(var.override_ami_name, local.k8s_settings["ami_name"])
+  ami_owner       = coalesce(var.override_ami_owner, local.k8s_settings["ami_owner"])
+  docker_version  = local.k8s_settings["docker_version"]
+  storage_backend = local.k8s_settings["storage_backend"]
+  etcd_version    = local.k8s_settings["etcd_version"]
 }
 
 locals {
-  has_spot_price   = "${var.max_price_spot == "" ? 0 : 1}"
-  spot_enabled     = "${local.has_spot_price * var.enabled}"
-  spot_asg_min     = "${var.spot_asg_min == "" ? var.node_asg_min : var.spot_asg_min}"
-  spot_asg_max     = "${var.spot_asg_max == "" ? var.node_asg_max : var.spot_asg_max}"
-  spot_asg_desired = "${var.spot_asg_desired == "" ? var.node_asg_desired : var.spot_asg_desired}"
+  has_spot_price   = var.max_price_spot == "" ? 0 : 1
+  spot_enabled     = local.has_spot_price * var.enabled
+  spot_asg_min     = var.spot_asg_min == "" ? var.node_asg_min : var.spot_asg_min
+  spot_asg_max     = var.spot_asg_max == "" ? var.node_asg_max : var.spot_asg_max
+  spot_asg_desired = var.spot_asg_desired == "" ? var.node_asg_desired : var.spot_asg_desired
 }
 
 locals {
   # Temporary variables due to the lack of combined logic operations.
-  cluster_autoscaler_both          = "${var.node_cluster_autoscaling_type == "both" ? 1 : 0}"
-  cluster_autoscaler_ondemand_only = "${var.node_cluster_autoscaling_type == "ondemand" ? 1 : 0}"
-  cluster_autoscaler_spot_only     = "${var.node_cluster_autoscaling_type == "spot" ? 1 : 0}"
+  cluster_autoscaler_both          = var.node_cluster_autoscaling_type == "both" ? 1 : 0
+  cluster_autoscaler_ondemand_only = var.node_cluster_autoscaling_type == "ondemand" ? 1 : 0
+  cluster_autoscaler_spot_only     = var.node_cluster_autoscaling_type == "spot" ? 1 : 0
 
   # Either 'both' OR the type-specific autoscaler.
   # The reason this works is:
   # - signum(1 + 0) = 1 === true
   # - signum(1 + 1) = 1 === true
   # - signum(0 + 0) = 0 === false
-  cluster_autoscaler_ondemand_enabled = "${signum(local.cluster_autoscaler_both + local.cluster_autoscaler_ondemand_only)}"
+  cluster_autoscaler_ondemand_enabled = signum(
+    local.cluster_autoscaler_both + local.cluster_autoscaler_ondemand_only,
+  )
 
-  cluster_autoscaler_spot_enabled = "${signum(local.cluster_autoscaler_both + local.cluster_autoscaler_spot_only)}"
+  cluster_autoscaler_spot_enabled = signum(
+    local.cluster_autoscaler_both + local.cluster_autoscaler_spot_only,
+  )
 }
 
 locals {
-  az_suspended_processes_raw = ["${var.asg_prevent_rebalance ? "AZRebalance" : ""}"]
-  az_suspended_processes     = "${compact(local.az_suspended_processes_raw)}"
+  az_suspended_processes_raw = [var.asg_prevent_rebalance ? "AZRebalance" : ""]
+  az_suspended_processes     = compact(local.az_suspended_processes_raw)
 }
+

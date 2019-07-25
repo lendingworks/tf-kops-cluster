@@ -5,40 +5,51 @@ variable "enabled" {
 }
 
 # Name for the cluster
-variable "cluster_name" {}
+variable "cluster_name" {
+}
 
 # Fully qualified DNS name of cluster
-variable "cluster_fqdn" {}
+variable "cluster_fqdn" {
+}
 
 # ID of the VPC
-variable "vpc_id" {}
+variable "vpc_id" {
+}
 
 # Route53 zone ID
-variable "route53_zone_id" {}
+variable "route53_zone_id" {
+}
 
 # ARN of the kops bucket
-variable "kops_s3_bucket_arn" {}
+variable "kops_s3_bucket_arn" {
+}
 
 # ID of the kops bucket
-variable "kops_s3_bucket_id" {}
+variable "kops_s3_bucket_id" {
+}
 
 # Name of the SSH key to use for cluster nodes and master
-variable "instance_key_name" {}
+variable "instance_key_name" {
+}
 
 # Security group ID to allow SSH from. Nodes and masters are added to this security group
-variable "sg_allow_ssh" {}
+variable "sg_allow_ssh" {
+}
 
 # Security group ID to allow HTTP/S from. Master ELB is added to this security group
-variable "sg_allow_http_s" {}
+variable "sg_allow_http_s" {
+}
 
 # ID of internet gateway for the VPC
-variable "internet_gateway_id" {}
+variable "internet_gateway_id" {
+}
 
-variable "aws_profile" {}
+variable "aws_profile" {
+}
 
 # A list of CIDR subnet blocks to use for Kubernetes public subnets. Should be 1 per AZ.
 variable "public_subnet_cidr_blocks" {
-  type = "list"
+  type = list(string)
 }
 
 # Use encryption for all volumes.
@@ -89,13 +100,13 @@ variable "node_volume_size" {
 
 # Any ingress ALB target groups that need to be linked to the nodes
 variable "node_alb_ingress_target_group_arns" {
-  type    = "list"
+  type    = list(string)
   default = []
 }
 
 # One of 'disabled', 'ondemand', 'spot' or 'both'.
 variable "node_cluster_autoscaling_type" {
-  type    = "string"
+  type    = string
   default = "disabled"
 }
 
@@ -126,7 +137,7 @@ variable "kubernetes_version" {
 
 # List of private subnet IDs. Pass 1 per AZ or if left blank then public subnets will be used
 variable "private_subnet_ids" {
-  type    = "list"
+  type    = list(string)
   default = []
 }
 
@@ -169,3 +180,4 @@ variable "etcd_volume_piops" {
 variable "asg_prevent_rebalance" {
   default = false
 }
+
