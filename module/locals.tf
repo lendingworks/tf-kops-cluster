@@ -126,23 +126,8 @@ locals {
 }
 
 locals {
-  # Temporary variables due to the lack of combined logic operations.
-  cluster_autoscaler_both          = var.node_cluster_autoscaling_type == "both" ? 1 : 0
-  cluster_autoscaler_ondemand_only = var.node_cluster_autoscaling_type == "ondemand" ? 1 : 0
-  cluster_autoscaler_spot_only     = var.node_cluster_autoscaling_type == "spot" ? 1 : 0
-
-  # Either 'both' OR the type-specific autoscaler.
-  # The reason this works is:
-  # - signum(1 + 0) = 1 === true
-  # - signum(1 + 1) = 1 === true
-  # - signum(0 + 0) = 0 === false
-  cluster_autoscaler_ondemand_enabled = signum(
-    local.cluster_autoscaler_both + local.cluster_autoscaler_ondemand_only,
-  )
-
-  cluster_autoscaler_spot_enabled = signum(
-    local.cluster_autoscaler_both + local.cluster_autoscaler_spot_only,
-  )
+  cluster_autoscaler_ondemand_enabled = var.node_cluster_autoscaling_type == "both" || var.node_cluster_autoscaling_type == "ondemand"
+  cluster_autoscaler_spot_enabled     = var.node_cluster_autoscaling_type == "both" || var.node_cluster_autoscaling_type == "spot"
 }
 
 locals {
