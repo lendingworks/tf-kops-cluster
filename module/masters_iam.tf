@@ -195,14 +195,27 @@ data "aws_iam_policy_document" "masters" {
     effect = "Allow"
 
     actions = [
-      "s3:GetObject",
       "s3:DeleteObject",
-      "s3:PutObject",
     ]
 
     resources = [
       "${var.kops_s3_bucket_arn}/${local.cluster_fqdn}/backups/etcd/main/*",
       "${var.kops_s3_bucket_arn}/${local.cluster_fqdn}/backups/etcd/events/*",
+    ]
+  }
+  }
+
+  statement {
+    sid    = "kopsK8sS3MasterBucketWrite"
+    effect = "Allow"
+
+    actions = [
+      "s3:Get*",
+      "s3:Put*",
+    ]
+
+    resources = [
+      "${var.kops_s3_bucket_arn}/${local.cluster_fqdn}/*",
     ]
   }
 
