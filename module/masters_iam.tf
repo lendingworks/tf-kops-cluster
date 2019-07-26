@@ -1,11 +1,11 @@
 resource "aws_iam_instance_profile" "masters" {
   name = "masters.${var.cluster_fqdn}"
-  role = "${aws_iam_role.masters.name}"
+  role = aws_iam_role.masters.name
 }
 
 resource "aws_iam_role" "masters" {
   name               = "masters.${var.cluster_fqdn}"
-  assume_role_policy = "${data.aws_iam_policy_document.assume_role_policy_masters.json}"
+  assume_role_policy = data.aws_iam_policy_document.assume_role_policy_masters.json
 }
 
 data "aws_iam_policy_document" "assume_role_policy_masters" {
@@ -21,14 +21,14 @@ data "aws_iam_policy_document" "assume_role_policy_masters" {
 }
 
 resource "aws_iam_role_policy_attachment" "masters" {
-  policy_arn = "${aws_iam_policy.masters.arn}"
-  role       = "${aws_iam_role.masters.name}"
+  policy_arn = aws_iam_policy.masters.arn
+  role       = aws_iam_role.masters.name
 }
 
 resource "aws_iam_policy" "masters" {
   name        = "masters.${var.cluster_fqdn}"
   description = "Kubernetes cluster ${var.cluster_name} masters instances"
-  policy      = "${data.aws_iam_policy_document.masters.json}"
+  policy      = data.aws_iam_policy_document.masters.json
 }
 
 data "aws_iam_policy_document" "masters" {
@@ -85,7 +85,7 @@ data "aws_iam_policy_document" "masters" {
     condition {
       test     = "StringEquals"
       variable = "ec2:ResourceTag/KubernetesCluster"
-      values   = ["${local.cluster_fqdn}"]
+      values   = [local.cluster_fqdn]
     }
   }
 
@@ -99,7 +99,7 @@ data "aws_iam_policy_document" "masters" {
       "autoscaling:DescribeAutoScalingGroups",
       "autoscaling:DescribeLaunchConfigurations",
       "autoscaling:GetAsgForInstance",
-      "ec2:DescribeLaunchTemplateVersions"
+      "ec2:DescribeLaunchTemplateVersions",
     ]
 
     resources = ["*"]
@@ -120,7 +120,7 @@ data "aws_iam_policy_document" "masters" {
     condition {
       test     = "StringEquals"
       variable = "autoscaling:ResourceTag/KubernetesCluster"
-      values   = ["${local.cluster_fqdn}"]
+      values   = [local.cluster_fqdn]
     }
   }
 
@@ -176,7 +176,7 @@ data "aws_iam_policy_document" "masters" {
       "s3:ListBucket",
     ]
 
-    resources = ["${var.kops_s3_bucket_arn}"]
+    resources = [var.kops_s3_bucket_arn]
   }
 
   statement {
@@ -258,3 +258,4 @@ data "aws_iam_policy_document" "masters" {
     resources = ["*"]
   }
 }
+

@@ -1,55 +1,53 @@
 ### ASG OnDemand Instances
 resource "aws_autoscaling_group" "node" {
-  count                = "${var.enabled ? 1 : 0}"
-  depends_on           = ["null_resource.create_cluster"]
+  count                = var.enabled ? 1 : 0
+  depends_on           = [null_resource.create_cluster]
   name                 = "nodes.${var.cluster_fqdn}"
-  launch_configuration = "${aws_launch_configuration.node.id}"
-  max_size             = "${var.node_asg_max}"
-  min_size             = "${var.enabled ? var.node_asg_min : 0}"
-  desired_capacity     = "${var.enabled ? var.node_asg_desired : 0}"
-  vpc_zone_identifier  = ["${split(",", local.k8s_subnet_ids)}"]
-  target_group_arns    = ["${var.node_alb_ingress_target_group_arns}"]
-  suspended_processes  = "${local.az_suspended_processes}"
+  launch_configuration = aws_launch_configuration.node[0].id
+  max_size             = var.node_asg_max
+  min_size             = var.enabled ? var.node_asg_min : 0
+  desired_capacity     = var.enabled ? var.node_asg_desired : 0
+  vpc_zone_identifier  = split(",", local.k8s_subnet_ids)
+  target_group_arns    = var.node_alb_ingress_target_group_arns
+  suspended_processes  = local.az_suspended_processes
 
   # Ignore changes to autoscaling group desired as it is managed by the
   # Kubernetes cluster autoscaler addon
   lifecycle {
-    ignore_changes = [
-      "desired_capacity",
-    ]
+    ignore_changes = [desired_capacity]
   }
 
-  tag = {
+  tag {
     key                 = "KubernetesCluster"
-    value               = "${local.cluster_fqdn}"
+    value               = local.cluster_fqdn
     propagate_at_launch = true
   }
 
-  tag = {
+  tag {
     key                 = "Name"
     value               = "nodes.${var.cluster_fqdn}"
     propagate_at_launch = true
   }
 
-  tag = {
+  tag {
     key                 = "k8s.io/cluster-autoscaler/node-template/label/kops.k8s.io/instancegroup"
     value               = "nodes"
     propagate_at_launch = true
   }
 
-  tag = {
+  tag {
     key                 = "k8s.io/role/node"
     value               = "1"
     propagate_at_launch = true
   }
 
-  tag = {
+  tag {
     key                 = "k8s.io/cluster-autoscaler/${local.cluster_autoscaler_ondemand_enabled ? "enabled" : "disabled"}"
     value               = "1"
     propagate_at_launch = true
   }
 
-  tag = {
+  tag {
     key                 = "k8s.io/custom-ondemandworker"
     value               = "true"
     propagate_at_launch = true
@@ -57,40 +55,40 @@ resource "aws_autoscaling_group" "node" {
 }
 
 resource "aws_launch_configuration" "node" {
-  count                = "${var.enabled ? 1 : 0}"
+  count                = var.enabled ? 1 : 0
   name_prefix          = "k8s-${var.cluster_name}-node-"
-  image_id             = "${aws_ami_copy.k8s-ami.id}"
-  instance_type        = "${var.node_instance_type}"
-  key_name             = "${var.instance_key_name}"
-  iam_instance_profile = "${aws_iam_instance_profile.nodes.name}"
+  image_id             = aws_ami_copy.k8s-ami.id
+  instance_type        = var.node_instance_type
+  key_name             = var.instance_key_name
+  iam_instance_profile = aws_iam_instance_profile.nodes.name
   user_data            = "${element(data.template_file.node_user_data_1.*.rendered, count.index)}${file("${path.module}/user_data/02_download_nodeup.sh")}${element(data.template_file.node_user_data_3.*.rendered, count.index)}${element(data.template_file.node_user_data_4.*.rendered, count.index)}${element(data.template_file.node_user_data_5.*.rendered, count.index)}"
 
   security_groups = [
-    "${aws_security_group.node.id}",
-    "${var.sg_allow_ssh}",
+    aws_security_group.node.id,
+    var.sg_allow_ssh,
   ]
 
-  root_block_device = {
+  root_block_device {
     volume_type           = "gp2"
-    volume_size           = "${var.node_volume_size}"
+    volume_size           = var.node_volume_size
     delete_on_termination = true
   }
 
-  lifecycle = {
+  lifecycle {
     create_before_destroy = true
   }
 }
 
 resource "aws_security_group" "node" {
   name        = "nodes.${var.cluster_fqdn}"
-  vpc_id      = "${var.vpc_id}"
+  vpc_id      = var.vpc_id
   description = "Kubernetes cluster ${var.cluster_name} nodes"
 
-  tags = "${map(
-    "Name", "nodes.${var.cluster_fqdn}",
-    "KubernetesCluster", "${local.cluster_fqdn}",
-    "kubernetes.io/cluster/${var.cluster_fqdn}", "owned"
-  )}"
+  tags = {
+    "Name"                                      = "nodes.${var.cluster_fqdn}"
+    "KubernetesCluster"                         = local.cluster_fqdn
+    "kubernetes.io/cluster/${var.cluster_fqdn}" = "owned"
+  }
 
   egress {
     from_port   = 0
@@ -102,57 +100,55 @@ resource "aws_security_group" "node" {
 
 ### If max_price_spot, then will be created one more ASG and LC
 resource "aws_autoscaling_group" "node_spot" {
-  count = "${local.spot_enabled ? 1 : 0}"
+  count = local.spot_enabled ? 1 : 0
 
-  depends_on           = ["null_resource.create_spot_instancegroup"]
+  depends_on           = [null_resource.create_spot_instancegroup]
   name                 = "nodes-spot.${var.cluster_fqdn}"
-  launch_configuration = "${aws_launch_configuration.node_spot.id}"
-  max_size             = "${local.spot_asg_max}"
-  min_size             = "${var.enabled ? local.spot_asg_min : 0}"
-  desired_capacity     = "${var.enabled ? local.spot_asg_desired : 0}"
-  vpc_zone_identifier  = ["${split(",", local.k8s_subnet_ids)}"]
-  target_group_arns    = ["${var.node_alb_ingress_target_group_arns}"]
-  suspended_processes  = "${local.az_suspended_processes}"
+  launch_configuration = aws_launch_configuration.node_spot[0].id
+  max_size             = local.spot_asg_max
+  min_size             = var.enabled ? local.spot_asg_min : 0
+  desired_capacity     = var.enabled ? local.spot_asg_desired : 0
+  vpc_zone_identifier  = split(",", local.k8s_subnet_ids)
+  target_group_arns    = var.node_alb_ingress_target_group_arns
+  suspended_processes  = local.az_suspended_processes
 
   # Ignore changes to autoscaling group desired as it is managed by the
   # Kubernetes cluster autoscaler addon
   lifecycle {
-    ignore_changes = [
-      "desired_capacity",
-    ]
+    ignore_changes = [desired_capacity]
   }
 
-  tag = {
+  tag {
     key                 = "KubernetesCluster"
-    value               = "${local.cluster_fqdn}"
+    value               = local.cluster_fqdn
     propagate_at_launch = true
   }
 
-  tag = {
+  tag {
     key                 = "Name"
     value               = "nodes-spot.${var.cluster_fqdn}"
     propagate_at_launch = true
   }
 
-  tag = {
+  tag {
     key                 = "k8s.io/cluster-autoscaler/node-template/label/kops.k8s.io/instancegroup"
     value               = "nodes-spot"
     propagate_at_launch = true
   }
 
-  tag = {
+  tag {
     key                 = "k8s.io/role/node"
     value               = "1"
     propagate_at_launch = true
   }
 
-  tag = {
+  tag {
     key                 = "k8s.io/cluster-autoscaler/${local.cluster_autoscaler_spot_enabled ? "enabled" : "disabled"}"
     value               = "1"
     propagate_at_launch = true
   }
 
-  tag = {
+  tag {
     key                 = "k8s.io/custom-spotworker"
     value               = "true"
     propagate_at_launch = true
@@ -160,28 +156,35 @@ resource "aws_autoscaling_group" "node_spot" {
 }
 
 resource "aws_launch_configuration" "node_spot" {
-  count = "${local.spot_enabled ? 1 : 0}"
+  count = local.spot_enabled ? 1 : 0
 
   name_prefix          = "k8s-${var.cluster_name}-node-spot-"
-  image_id             = "${aws_ami_copy.k8s-ami.id}"
-  instance_type        = "${var.spot_node_instance_type}"
-  key_name             = "${var.instance_key_name}"
-  spot_price           = "${var.max_price_spot}"
-  iam_instance_profile = "${aws_iam_instance_profile.nodes.name}"
-  user_data            = "${element(data.template_file.node_user_data_1.*.rendered, count.index)}${file("${path.module}/user_data/02_download_nodeup.sh")}${element(data.template_file.node_user_data_3.*.rendered, count.index)}${element(data.template_file.node_user_data_4_spot.*.rendered, count.index)}${element(data.template_file.node_user_data_5_spot.*.rendered, count.index)}"
+  image_id             = aws_ami_copy.k8s-ami.id
+  instance_type        = var.spot_node_instance_type
+  key_name             = var.instance_key_name
+  spot_price           = var.max_price_spot
+  iam_instance_profile = aws_iam_instance_profile.nodes.name
+  user_data = "${element(data.template_file.node_user_data_1.*.rendered, count.index)}${file("${path.module}/user_data/02_download_nodeup.sh")}${element(data.template_file.node_user_data_3.*.rendered, count.index)}${element(
+    data.template_file.node_user_data_4_spot.*.rendered,
+    count.index,
+    )}${element(
+    data.template_file.node_user_data_5_spot.*.rendered,
+    count.index,
+  )}"
 
   security_groups = [
-    "${aws_security_group.node.id}",
-    "${var.sg_allow_ssh}",
+    aws_security_group.node.id,
+    var.sg_allow_ssh,
   ]
 
-  root_block_device = {
+  root_block_device {
     volume_type           = "gp2"
-    volume_size           = "${var.node_volume_size}"
+    volume_size           = var.node_volume_size
     delete_on_termination = true
   }
 
-  lifecycle = {
+  lifecycle {
     create_before_destroy = true
   }
 }
+
