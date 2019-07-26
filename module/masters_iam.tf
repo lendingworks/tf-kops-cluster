@@ -203,7 +203,6 @@ data "aws_iam_policy_document" "masters" {
       "${var.kops_s3_bucket_arn}/${local.cluster_fqdn}/backups/etcd/events/*",
     ]
   }
-  }
 
   statement {
     sid    = "kopsK8sS3MasterBucketWrite"
