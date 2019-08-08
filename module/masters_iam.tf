@@ -257,5 +257,13 @@ data "aws_iam_policy_document" "masters" {
 
     resources = ["*"]
   }
+
+  // Allows the use of kube2iam or kiam.
+  statement {
+    sid       = "kopsK8sKIAM"
+    effect    = "Allow"
+    actions   = ["sts:AssumeRole"]
+    resources = ["*"]
+  }
 }
 
