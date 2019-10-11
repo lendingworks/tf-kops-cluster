@@ -26,6 +26,15 @@ resource "null_resource" "create_spot_instancegroup" {
   }
 }
 
+resource "null_resource" "create_additional_instancegroups" {
+  depends_on = [null_resource.create_cluster]
+  count      = length(var.additional_instance_groups)
+
+  provisioner "local-exec" {
+    command = "AWS_PROFILE=${var.aws_profile} kops create ig ${var.additional_instance_groups[count.index].name} --role=node --state=s3://${var.kops_s3_bucket_id} --output=yaml --name=${local.cluster_fqdn} --edit=false"
+  }
+}
+
 resource "null_resource" "delete_tf_files" {
   depends_on = [null_resource.create_cluster]
 
@@ -33,4 +42,3 @@ resource "null_resource" "delete_tf_files" {
     command = "rm -rf out"
   }
 }
-
