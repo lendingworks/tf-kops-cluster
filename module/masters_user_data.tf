@@ -27,6 +27,7 @@ data "template_file" "master_user_data_4" {
 
   vars = {
     instance_group = "master-${element(local.az_names, count.index)}"
+    taints         = "null"
   }
 }
 
@@ -47,11 +48,11 @@ etcdManifests:
 MANIFEST
 
     instance_group = "master-${element(local.az_names, count.index)}"
-    kubelet_hash = local.kubelet_hash
-    kubectl_hash = local.kubectl_hash
-    cni_hash = local.cni_hash
-    cni_file_name = local.cni_file_name
-    utils_hash = local.utils_hash
+    kubelet_hash   = local.kubelet_hash
+    kubectl_hash   = local.kubectl_hash
+    cni_hash       = local.cni_hash
+    cni_file_name  = local.cni_file_name
+    utils_hash     = local.utils_hash
     protokube_hash = local.protokube_hash
   }
 }
