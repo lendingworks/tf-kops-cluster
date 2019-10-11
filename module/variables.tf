@@ -215,3 +215,17 @@ variable "asg_prevent_rebalance" {
   default = false
 }
 
+# A map of additional instance groups to create via kops.
+variable "additional_instance_groups" {
+  type = list(object({
+    name             = string,
+    instance_type    = string,
+    capacity_desired = number,
+    capacity_min     = number,
+    capacity_max     = number,
+    root_volume_size = number,
+    max_spot_price   = string, # Set to an empty string to disable spot.
+    tags             = list(object({ name = string, value = string })),
+  }))
+  default = []
+}
