@@ -261,10 +261,10 @@ resource "aws_launch_configuration" "nodes_additional" {
   spot_price           = var.additional_instance_groups[count.index].max_spot_price == "" ? null : var.additional_instance_groups[count.index].max_spot_price
   iam_instance_profile = aws_iam_instance_profile.nodes.name
   user_data = "${element(data.template_file.node_user_data_1.*.rendered, count.index)}${file("${path.module}/user_data/02_download_nodeup.sh")}${element(data.template_file.node_user_data_3.*.rendered, count.index)}${element(
-    data.template_file.node_user_data_4_spot.*.rendered,
+    data.template_file.node_user_data_4_additional.*.rendered,
     count.index,
     )}${element(
-    data.template_file.node_user_data_5_spot.*.rendered,
+    data.template_file.node_user_data_5_additional.*.rendered,
     count.index,
   )}"
 

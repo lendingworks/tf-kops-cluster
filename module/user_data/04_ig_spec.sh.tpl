@@ -3,6 +3,6 @@ kubelet:
   imagePullProgressDeadline: 1h0m0s
 nodeLabels:
   kops.k8s.io/instancegroup: ${instance_group}
-taints: null
+taints: ${taints}
 
 __EOF_IG_SPEC
