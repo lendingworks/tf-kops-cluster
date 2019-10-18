@@ -225,6 +225,7 @@ variable "additional_instance_groups" {
     capacity_max     = number,
     root_volume_size = number,
     max_spot_price   = string, # Set to an empty string to disable spot.
+    ebs_optimised    = bool,
     tags             = list(object({ name = string, value = string })),
     # Set to an empty string to disable taints. Set to an encoded list to set
     # taints, e.g.:
