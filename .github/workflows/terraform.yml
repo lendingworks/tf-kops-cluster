@@ -6,13 +6,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
-    - name: Terraform Init
+    - name: Terraform init
       uses: hashicorp/terraform-github-actions/init@v0.4.5
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         TF_ACTION_WORKING_DIR: 'module'
-    - name: Terraform Validate
-      uses: hashicorp/terraform-github-actions/validate@v0.4.5
+    - name: Terraform fmt
+      uses: hashicorp/terraform-github-actions/fmt@v0.4.5
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         TF_ACTION_WORKING_DIR: 'module'
