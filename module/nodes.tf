@@ -1,3 +1,7 @@
+locals {
+  node_subnet_ids = split(",", local.k8s_subnet_ids)
+}
+
 ### ASG OnDemand Instances
 resource "aws_autoscaling_group" "node" {
   count                = var.enabled ? 1 : 0
@@ -7,7 +11,7 @@ resource "aws_autoscaling_group" "node" {
   max_size             = var.node_asg_max
   min_size             = var.enabled ? var.node_asg_min : 0
   desired_capacity     = var.enabled ? var.node_asg_desired : 0
-  vpc_zone_identifier  = split(",", local.k8s_subnet_ids)
+  vpc_zone_identifier  = local.node_subnet_ids
   target_group_arns    = var.node_alb_ingress_target_group_arns
   suspended_processes  = local.az_suspended_processes
 
@@ -108,7 +112,7 @@ resource "aws_autoscaling_group" "node_spot" {
   max_size             = local.spot_asg_max
   min_size             = var.enabled ? local.spot_asg_min : 0
   desired_capacity     = var.enabled ? local.spot_asg_desired : 0
-  vpc_zone_identifier  = split(",", local.k8s_subnet_ids)
+  vpc_zone_identifier  = local.node_subnet_ids
   target_group_arns    = var.node_alb_ingress_target_group_arns
   suspended_processes  = local.az_suspended_processes
 
@@ -196,7 +200,7 @@ resource "aws_autoscaling_group" "nodes_additional" {
   max_size             = var.additional_instance_groups[count.index].capacity_max
   min_size             = var.additional_instance_groups[count.index].capacity_min
   desired_capacity     = var.additional_instance_groups[count.index].capacity_desired
-  vpc_zone_identifier  = split(",", local.k8s_subnet_ids)
+  vpc_zone_identifier  = length(var.additional_instance_groups[count.index].subnet_ids) == 0 ? local.node_subnet_ids : var.additional_instance_groups[count.index].subnet_ids
   target_group_arns    = var.node_alb_ingress_target_group_arns
   suspended_processes  = local.az_suspended_processes
 
