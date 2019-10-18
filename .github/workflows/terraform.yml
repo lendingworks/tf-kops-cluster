@@ -2,24 +2,15 @@ name: Terraform Lint
 on: [pull_request]
 
 jobs:
-  on-pull-request:
-    name: On Pull Request
+  lint:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout
-      uses: actions/checkout@v1
-      
-    - name: Only run on open PRs
-      uses: actions/bin/filter@master
-      with:
-        args: "action 'opened|rerequested|synchronize'"
-            
+    - uses: actions/checkout@v1
     - name: Terraform Init
       uses: hashicorp/terraform-github-actions/init@v0.4.5
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         TF_ACTION_WORKING_DIR: '.'
-        
     - name: Terraform Validate
       uses: hashicorp/terraform-github-actions/validate@v0.4.5
       env:
