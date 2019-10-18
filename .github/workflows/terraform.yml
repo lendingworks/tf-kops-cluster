@@ -1,0 +1,18 @@
+name: Terraform Lint
+on: [pull_request]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: Terraform init
+      uses: hashicorp/terraform-github-actions/init@v0.4.5
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        TF_ACTION_WORKING_DIR: 'module'
+    - name: Terraform fmt
+      uses: hashicorp/terraform-github-actions/fmt@v0.4.5
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        TF_ACTION_WORKING_DIR: 'module'
