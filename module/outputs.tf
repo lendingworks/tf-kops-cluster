@@ -54,6 +54,27 @@ output "master_asg_arns" {
   value = aws_autoscaling_group.master.*.arn
 }
 
+output "nodes_additional_asg_names" {
+  value = aws_autoscaling_group.nodes_additional.*.name
+}
+
+output "nodes_additional_asg_ids" {
+  value = aws_autoscaling_group.nodes_additional.*.id
+}
+
+output "nodes_additional_asg_arns" {
+  value = aws_autoscaling_group.nodes_additional.*.arn
+}
+
+output "all_asg_names" {
+  value = concat(
+    aws_autoscaling_group.master.*.name,
+    aws_autoscaling_group.node.*.name,
+    aws_autoscaling_group.node_spot.*.name,
+    aws_autoscaling_group.nodes_additional.*.name,
+  )
+}
+
 output "cluster_fqdn" {
   value = local.cluster_fqdn
 }
