@@ -279,7 +279,8 @@ resource "aws_launch_configuration" "nodes_additional" {
   ]
 
   root_block_device {
-    volume_type           = "gp2"
+    volume_type           = var.additional_instance_groups[count.index].root_volume_type
+    iops                  = var.additional_instance_groups[count.index].root_volume_type == "io1" ? var.additional_instance_groups[count.index].root_volume_iops : null
     volume_size           = var.additional_instance_groups[count.index].root_volume_size
     delete_on_termination = true
   }
