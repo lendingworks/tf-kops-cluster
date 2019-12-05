@@ -4,13 +4,13 @@ locals {
 
 ### ASG OnDemand Instances
 resource "aws_autoscaling_group" "node" {
-  count                = var.enabled ? 1 : 0
+  count                = local.default_nodes_enabled ? 1 : 0
   depends_on           = [null_resource.create_cluster]
   name                 = "nodes.${var.cluster_fqdn}"
   launch_configuration = aws_launch_configuration.node[0].id
   max_size             = var.node_asg_max
-  min_size             = var.enabled ? var.node_asg_min : 0
-  desired_capacity     = var.enabled ? var.node_asg_desired : 0
+  min_size             = local.default_nodes_enabled ? var.node_asg_min : 0
+  desired_capacity     = local.default_nodes_enabled ? var.node_asg_desired : 0
   vpc_zone_identifier  = local.node_subnet_ids
   target_group_arns    = var.node_alb_ingress_target_group_arns
   suspended_processes  = local.az_suspended_processes
@@ -59,7 +59,7 @@ resource "aws_autoscaling_group" "node" {
 }
 
 resource "aws_launch_configuration" "node" {
-  count                = var.enabled ? 1 : 0
+  count                = local.default_nodes_enabled ? 1 : 0
   name_prefix          = "k8s-${var.cluster_name}-node-"
   image_id             = aws_ami_copy.k8s-ami.id
   instance_type        = var.node_instance_type
@@ -110,8 +110,8 @@ resource "aws_autoscaling_group" "node_spot" {
   name                 = "nodes-spot.${var.cluster_fqdn}"
   launch_configuration = aws_launch_configuration.node_spot[0].id
   max_size             = local.spot_asg_max
-  min_size             = var.enabled ? local.spot_asg_min : 0
-  desired_capacity     = var.enabled ? local.spot_asg_desired : 0
+  min_size             = local.default_nodes_enabled ? local.spot_asg_min : 0
+  desired_capacity     = local.default_nodes_enabled ? local.spot_asg_desired : 0
   vpc_zone_identifier  = local.node_subnet_ids
   target_group_arns    = var.node_alb_ingress_target_group_arns
   suspended_processes  = local.az_suspended_processes
@@ -193,7 +193,7 @@ resource "aws_launch_configuration" "node_spot" {
 }
 
 resource "aws_autoscaling_group" "nodes_additional" {
-  count                = length(var.additional_instance_groups)
+  count                = var.enabled ? length(var.additional_instance_groups) : 0
   depends_on           = [null_resource.create_additional_instancegroups]
   name                 = "${var.additional_instance_groups[count.index].name}.${var.cluster_fqdn}"
   launch_configuration = aws_launch_configuration.nodes_additional[count.index].id
@@ -257,7 +257,7 @@ resource "aws_autoscaling_group" "nodes_additional" {
 }
 
 resource "aws_launch_configuration" "nodes_additional" {
-  count                = length(var.additional_instance_groups)
+  count                = var.enabled ? length(var.additional_instance_groups) : 0
   name_prefix          = "k8s-${var.cluster_name}-${var.additional_instance_groups[count.index].name}-"
   image_id             = aws_ami_copy.k8s-ami.id
   instance_type        = var.additional_instance_groups[count.index].instance_type
