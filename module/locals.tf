@@ -119,10 +119,11 @@ locals {
 }
 
 locals {
-  spot_enabled     = var.max_price_spot != "" && var.enabled
-  spot_asg_min     = var.spot_asg_min == "" ? var.node_asg_min : var.spot_asg_min
-  spot_asg_max     = var.spot_asg_max == "" ? var.node_asg_max : var.spot_asg_max
-  spot_asg_desired = var.spot_asg_desired == "" ? var.node_asg_desired : var.spot_asg_desired
+  default_nodes_enabled = var.enabled && var.node_asg_max > 0
+  spot_enabled          = var.max_price_spot != "" && var.enabled
+  spot_asg_min          = var.spot_asg_min == "" ? var.node_asg_min : var.spot_asg_min
+  spot_asg_max          = var.spot_asg_max == "" ? var.node_asg_max : var.spot_asg_max
+  spot_asg_desired      = var.spot_asg_desired == "" ? var.node_asg_desired : var.spot_asg_desired
 }
 
 locals {
