@@ -107,3 +107,10 @@ output "master_azs" {
   value = local.master_azs
 }
 
+output "etcd_events_ebs_volume_arns" {
+  value = aws_ebs_volume.etcd-events.*.arn
+}
+
+output "etcd_main_ebs_volume_arns" {
+  value = aws_ebs_volume.etcd-main.*.arn
+}
