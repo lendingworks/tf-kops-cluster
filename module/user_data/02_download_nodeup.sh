@@ -8,48 +8,39 @@ function ensure-install-dir() {
   cd ${INSTALL_DIR}
 }
 
-# Retry a download until we get it. Takes a hash and a set of URLs.
-#
-# $1 is the sha1 of the URL. Can be "" if the sha1 is unknown.
-# $2+ are the URLs to download.
+# Retry a download until we get it. args: name, sha, url1, url2...
 download-or-bust() {
-  local -r hash="$1"
-  shift 1
+  local -r file="$1"
+  local -r hash="$2"
+  shift 2
 
   urls=( $* )
   while true; do
     for url in "${urls[@]}"; do
-      local file="${url##*/}"
-
-      if [[ -e "${file}" ]]; then
-        echo "== File exists for ${url} =="
-
-      # CoreOS runs this script in a container without which (but has curl)
-      # Note also that busybox wget doesn't support wget --version, but busybox doesn't normally have curl
-      # So we default to wget unless we see curl
-      elif [[ $(curl --version) ]]; then
-        if ! curl -f --ipv4 -Lo "${file}" --connect-timeout 20 --retry 6 --retry-delay 10 "${url}"; then
-          echo "== Failed to curl ${url}. Retrying. =="
-          break
+      commands=(
+        "curl -f --ipv4 --compressed -Lo "${file}" --connect-timeout 20 --retry 6 --retry-delay 10"
+        "wget --inet4-only --compression=auto -O "${file}" --connect-timeout=20 --tries=6 --wait=10"
+        "curl -f --ipv4 -Lo "${file}" --connect-timeout 20 --retry 6 --retry-delay 10"
+        "wget --inet4-only -O "${file}" --connect-timeout=20 --tries=6 --wait=10"
+      )
+      for cmd in "${commands[@]}"; do
+        echo "Attempting download with: ${cmd} {url}"
+        if ! (${cmd} "${url}"); then
+          echo "== Download failed with ${cmd} =="
+          continue
         fi
-      else
-        if ! wget --inet4-only -O "${file}" --connect-timeout=20 --tries=6 --wait=10 "${url}"; then
-          echo "== Failed to wget ${url}. Retrying. =="
-          break
-        fi
-      fi
-
-      if [[ -n "${hash}" ]] && ! validate-hash "${file}" "${hash}"; then
-        echo "== Hash validation of ${url} failed. Retrying. =="
-        rm -f "${file}"
-      else
-        if [[ -n "${hash}" ]]; then
-          echo "== Downloaded ${url} (SHA1 = ${hash}) =="
+        if [[ -n "${hash}" ]] && ! validate-hash "${file}" "${hash}"; then
+          echo "== Hash validation of ${url} failed. Retrying. =="
+          rm -f "${file}"
         else
-          echo "== Downloaded ${url} =="
+          if [[ -n "${hash}" ]]; then
+            echo "== Downloaded ${url} (SHA1 = ${hash}) =="
+          else
+            echo "== Downloaded ${url} =="
+          fi
+          return
         fi
-        return
-      fi
+      done
     done
 
     echo "All downloads failed; sleeping before retrying"
@@ -62,9 +53,9 @@ validate-hash() {
   local -r expected="$2"
   local actual
 
-  actual=$(sha1sum ${file} | awk '{ print $1 }') || true
+  actual=$(sha256sum ${file} | awk '{ print $1 }') || true
   if [[ "${actual}" != "${expected}" ]]; then
-    echo "== ${file} corrupted, sha1 ${actual} doesn't match expected ${expected} =="
+    echo "== ${file} corrupted, hash ${actual} doesn't match expected ${expected} =="
     return 1
   fi
 }
@@ -78,18 +69,17 @@ function try-download-release() {
   # optimization.
 
   local -r nodeup_urls=( $(split-commas "${NODEUP_URL}") )
-  local -r nodeup_filename="${nodeup_urls[0]##*/}"
   if [[ -n "${NODEUP_HASH:-}" ]]; then
     local -r nodeup_hash="${NODEUP_HASH}"
   else
   # TODO: Remove?
-    echo "Downloading sha1 (not found in env)"
-    download-or-bust "" "${nodeup_urls[@]/%/.sha1}"
-    local -r nodeup_hash=$(cat "${nodeup_filename}.sha1")
+    echo "Downloading sha256 (not found in env)"
+    download-or-bust nodeup.sha256 "" "${nodeup_urls[@]/%/.sha256}"
+    local -r nodeup_hash=$(cat nodeup.sha256)
   fi
 
   echo "Downloading nodeup (${nodeup_urls[@]})"
-  download-or-bust "${nodeup_hash}" "${nodeup_urls[@]}"
+  download-or-bust nodeup "${nodeup_hash}" "${nodeup_urls[@]}"
 
   chmod +x nodeup
 }

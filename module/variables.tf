@@ -158,7 +158,7 @@ variable "spot_asg_max" {
 # Kubernetes version tag to use
 variable "kubernetes_version" {
   type    = string
-  default = "1.12.9"
+  default = "1.16.6"
 }
 
 # List of private subnet IDs. Pass 1 per AZ or if left blank then public subnets will be used

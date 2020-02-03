@@ -20,7 +20,6 @@ kubeProxy:
   image: k8s.gcr.io/kube-proxy:v${kubernetes_version}
   logLevel: 2
 kubelet:
-  allowPrivileged: true
   anonymousAuth: false
   cgroupRoot: /
   cloudProvider: aws
@@ -28,8 +27,6 @@ kubelet:
   clusterDomain: cluster.local
   enableDebuggingHandlers: true
   evictionHard: memory.available<100Mi,nodefs.available<10%,nodefs.inodesFree<5%,imagefs.available<10%,imagefs.inodesFree<5%
-  featureGates:
-    ExperimentalCriticalPodAnnotation: "true"
   hostnameOverride: '@aws'
   kubeconfigPath: /var/lib/kubelet/kubeconfig
   logLevel: 2
