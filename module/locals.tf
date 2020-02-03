@@ -45,32 +45,6 @@ locals {
       storage_backend = "etcd3"
       etcd_version    = "3.3.10"
     }
-    "1.12.9" = {
-      kubelet_hash    = "e914b17532c411cb7c0cc472131b61935fb66b31"
-      kubectl_hash    = "aa3e93897a6999d6c7dedbc41793c90d41eeb000"
-      cni_hash        = "52e9d2de8a5f927307d9397308735658ee44ab8d"
-      cni_file_name   = "cni-plugins-amd64-v0.7.5.tgz"
-      utils_hash      = "ad4085c05ff02c241a38ff0033d76c699316f298"
-      protokube_hash  = "175d2d9df2b9e317a40749a6d735577546a3c38d"
-      docker_version  = "18.06.3"
-      ami_name        = "k8s-1.12-debian-stretch-amd64-hvm-ebs-2019-05-14"
-      ami_owner       = "383156758163"
-      storage_backend = "etcd3"
-      etcd_version    = "3.2.24"
-    }
-    "1.11.6" = {
-      kubelet_hash    = "a006b4680640e5c88742e22b904623a77257f416"
-      kubectl_hash    = "c3f7fbab5ba39e3ec20b32f0e7bcad6cc0704792"
-      cni_hash        = "d595d3ded6499a64e8dac02466e2f5f2ce257c9f"
-      cni_file_name   = "cni-plugins-amd64-v0.6.0.tgz"
-      utils_hash      = "b16b5367e05bad082f416f786c7f8813f7794630"
-      protokube_hash  = "725c2de47755544a9aa349e27ed9900d195f0ceb"
-      docker_version  = "18.06.1"
-      ami_name        = "k8s-1.11-debian-stretch-amd64-hvm-ebs-2018-08-17"
-      ami_owner       = "383156758163"
-      storage_backend = "etcd3"
-      etcd_version    = "3.1.12"
-    }
   }
 }
 

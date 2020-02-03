@@ -43,7 +43,5 @@ Networking: weave
 
 Kops version: 1.16.0-beta.1
 
-Supported Kubernetes versions:
-  - 1.11.6
-  - 1.12.9
+Supported Kubernetes versions (pre v1.16 isn't supported due to hashing changes in the `kops` init scripts):
   - 1.16.6 _(recommended)_
