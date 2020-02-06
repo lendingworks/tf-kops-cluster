@@ -71,4 +71,3 @@ resource "aws_security_group_rule" "node_to_master_udp_1-65535" {
   to_port                  = 65535
   protocol                 = "udp"
 }
-

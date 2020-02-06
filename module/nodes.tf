@@ -40,6 +40,12 @@ resource "aws_autoscaling_group" "node" {
   }
 
   tag {
+    key                 = "kops.k8s.io/instancegroup"
+    value               = "nodes"
+    propagate_at_launch = true
+  }
+
+  tag {
     key                 = "k8s.io/role/node"
     value               = "1"
     propagate_at_launch = true
@@ -141,6 +147,12 @@ resource "aws_autoscaling_group" "node_spot" {
   }
 
   tag {
+    key                 = "kops.k8s.io/instancegroup"
+    value               = "nodes-spot"
+    propagate_at_launch = true
+  }
+
+  tag {
     key                 = "k8s.io/role/node"
     value               = "1"
     propagate_at_launch = true
@@ -224,6 +236,12 @@ resource "aws_autoscaling_group" "nodes_additional" {
 
   tag {
     key                 = "k8s.io/cluster-autoscaler/node-template/label/kops.k8s.io/instancegroup"
+    value               = var.additional_instance_groups[count.index].name
+    propagate_at_launch = true
+  }
+
+  tag {
+    key                 = "kops.k8s.io/instancegroup"
     value               = var.additional_instance_groups[count.index].name
     propagate_at_launch = true
   }

@@ -4,6 +4,7 @@ data "template_file" "master_user_data_1" {
 
   vars = {
     kops_version = local.supported_kops_version
+    aws_region   = data.aws_region.current.name
   }
 }
 

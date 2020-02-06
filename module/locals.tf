@@ -1,6 +1,6 @@
 locals {
-  # Currently support kops version
-  supported_kops_version = "1.12.1"
+  # Currently supported kops version
+  supported_kops_version = "1.16.0-beta.1"
 
   # Removes the last character of the FQDN if it is '.'
   cluster_fqdn = replace(var.cluster_fqdn, "/\\.$/", "")
@@ -32,70 +32,18 @@ locals {
   # Easiest way to get new hashes is to create a dummy cluster using kops and
   # check user data.
   k8s_versions = {
-    "1.12.9" = {
-      kubelet_hash    = "e914b17532c411cb7c0cc472131b61935fb66b31"
-      kubectl_hash    = "aa3e93897a6999d6c7dedbc41793c90d41eeb000"
-      cni_hash        = "52e9d2de8a5f927307d9397308735658ee44ab8d"
+    "1.16.6" = {
+      kubelet_hash    = "47b99b6b9c4654a3fd5e3f093763429f8a6007f788bd7394bd0b85cb7ae4b2d0"
+      kubectl_hash    = "05aae29c6e96fc07db195878263d3b625b623b9f16f87851e4a8ed8d234bcc2d"
+      cni_hash        = "3ca15c0a18ee830520cf3a95408be826cbd255a1535a38e0be9608b25ad8bf64"
       cni_file_name   = "cni-plugins-amd64-v0.7.5.tgz"
-      utils_hash      = "ad4085c05ff02c241a38ff0033d76c699316f298"
-      protokube_hash  = "175d2d9df2b9e317a40749a6d735577546a3c38d"
-      docker_version  = "18.06.3"
-      ami_name        = "k8s-1.12-debian-stretch-amd64-hvm-ebs-2019-05-14"
+      utils_hash      = "fef545b247951287c4509dcb606b4370f4241bfa94a6c0181c83eac2295856c7"
+      protokube_hash  = "9453692c9de143353b1ae38e2dcb22524e131ddcdcf1b373be94876c87a437d1"
+      docker_version  = "18.09.9"
+      ami_name        = "k8s-1.16-debian-stretch-amd64-hvm-ebs-2020-01-17"
       ami_owner       = "383156758163"
       storage_backend = "etcd3"
-      etcd_version    = "3.2.24"
-    }
-    "1.11.6" = {
-      kubelet_hash    = "a006b4680640e5c88742e22b904623a77257f416"
-      kubectl_hash    = "c3f7fbab5ba39e3ec20b32f0e7bcad6cc0704792"
-      cni_hash        = "d595d3ded6499a64e8dac02466e2f5f2ce257c9f"
-      cni_file_name   = "cni-plugins-amd64-v0.6.0.tgz"
-      utils_hash      = "b16b5367e05bad082f416f786c7f8813f7794630"
-      protokube_hash  = "725c2de47755544a9aa349e27ed9900d195f0ceb"
-      docker_version  = "18.06.1"
-      ami_name        = "k8s-1.11-debian-stretch-amd64-hvm-ebs-2018-08-17"
-      ami_owner       = "383156758163"
-      storage_backend = "etcd3"
-      etcd_version    = "3.1.12"
-    }
-    "1.10.11" = {
-      kubelet_hash    = "dbe06f92f4d1878482af0188070c6c0bca5d5e65"
-      kubectl_hash    = "9ee2f78491cbf8dc76d644c23cfc8c955c34d55d"
-      cni_hash        = "d595d3ded6499a64e8dac02466e2f5f2ce257c9f"
-      cni_file_name   = "cni-plugins-amd64-v0.6.0.tgz"
-      utils_hash      = "1903d30f87488f6e3550918283ff8aa1c5553471"
-      protokube_hash  = "139d69230bb029a419ca8e5a9be2f406d8e685c4"
-      docker_version  = "17.09.0"
-      ami_name        = "k8s-1.10-debian-stretch-amd64-hvm-ebs-2018-08-17"
-      ami_owner       = "383156758163"
-      storage_backend = "etcd3"
-      etcd_version    = "3.1.12"
-    }
-    "1.10.9" = {
-      kubelet_hash    = "aadc25f7a7497d91419b168e4cb06e16755e8916"
-      kubectl_hash    = "bf3914630fe45b4f9ec1bc5e56f10fb30047f958"
-      cni_hash        = "d595d3ded6499a64e8dac02466e2f5f2ce257c9f"
-      cni_file_name   = "cni-plugins-amd64-v0.6.0.tgz"
-      utils_hash      = "1903d30f87488f6e3550918283ff8aa1c5553471"
-      protokube_hash  = "139d69230bb029a419ca8e5a9be2f406d8e685c4"
-      docker_version  = "17.09.0"
-      ami_name        = "k8s-1.10-debian-stretch-amd64-hvm-ebs-2018-08-17"
-      ami_owner       = "383156758163"
-      storage_backend = "etcd3"
-      etcd_version    = "3.1.12"
-    }
-    "1.9.8" = {
-      kubelet_hash    = "6468397888494efe4a32e6bd96700ba6a86e635a"
-      kubectl_hash    = "9a3537a7d95f1beec55e2fae082c364f6b91fdc0"
-      cni_hash        = "d595d3ded6499a64e8dac02466e2f5f2ce257c9f"
-      cni_file_name   = "cni-plugins-amd64-v0.6.0.tgz"
-      utils_hash      = "72fac6679084d1f929d0abbd8a9ff9337273504b"
-      protokube_hash  = "527db0b5fd4b635e6cb2ca22bfec813a048855a7"
-      docker_version  = "1.13.1"
-      ami_name        = "k8s-1.9-debian-jessie-amd64-hvm-ebs-2018-05-27"
-      ami_owner       = "383156758163"
-      storage_backend = "etcd2"
-      etcd_version    = "2.2.1"
+      etcd_version    = "3.3.10"
     }
   }
 }

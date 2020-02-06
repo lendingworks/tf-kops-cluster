@@ -39,13 +39,9 @@ A full example with VPC resources in [example](example).
 
 Authentication: RBAC only
 
-Networking: calico or flannel
+Networking: weave
 
-Kops version: 1.10.0
+Kops version: 1.16.0-beta.1
 
-Supported Kubernetes versions:
-  - 1.9.8
-  - 1.10.9
-  - 1.10.11
-  - 1.11.6
-  - 1.12.9 _(recommended)_
+Supported Kubernetes versions (pre v1.16 isn't supported due to hashing changes in the `kops` init scripts):
+  - 1.16.6 _(recommended)_
