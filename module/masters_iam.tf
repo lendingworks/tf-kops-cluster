@@ -174,6 +174,7 @@ data "aws_iam_policy_document" "masters" {
       "s3:GetBucketLocation",
       "s3:GetEncryptionConfiguration",
       "s3:ListBucket",
+      "s3:ListBucketVersions",
     ]
 
     resources = [var.kops_s3_bucket_arn]
@@ -197,6 +198,7 @@ data "aws_iam_policy_document" "masters" {
     actions = [
       "s3:GetObject",
       "s3:DeleteObject",
+      "s3:DeleteObjectVersion",
       "s3:PutObject",
     ]
 
