@@ -45,7 +45,9 @@ data "aws_iam_policy_document" "nodes" {
 
     actions = [
       "s3:GetBucketLocation",
+      "s3:GetEncryptionConfiguration",
       "s3:ListBucket",
+      "s3:ListBucketVersions",
     ]
 
     resources = [var.kops_s3_bucket_arn]

@@ -41,7 +41,8 @@ Authentication: RBAC only
 
 Networking: weave
 
-Kops version: 1.16.0-beta.1
+Kops version: 1.17.1
 
 Supported Kubernetes versions (pre v1.16 isn't supported due to hashing changes in the `kops` init scripts):
-  - 1.16.6 _(recommended)_
+  - 1.16.12 _(recommended)_
+  - 1.16.6
