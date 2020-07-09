@@ -2,7 +2,7 @@ cat > kube_env.yaml << '__EOF_KUBE_ENV'
 Assets:
 - ${kubelet_hash}@https://storage.googleapis.com/kubernetes-release/release/v${kubernetes_version}/bin/linux/amd64/kubelet
 - ${kubectl_hash}@https://storage.googleapis.com/kubernetes-release/release/v${kubernetes_version}/bin/linux/amd64/kubectl
-- ${cni_hash}@https://storage.googleapis.com/kubernetes-release/network-plugins/${cni_file_name}
+- ${cni_hash}@https://storage.googleapis.com/k8s-artifacts-cni/release/${cni_file_name}
 - ${utils_hash}@https://kubeupv2.s3.amazonaws.com/kops/${kops_version}/linux/amd64/utils.tar.gz
 ClusterName: ${cluster_fqdn}
 ConfigBase: s3://${kops_s3_bucket}/${cluster_fqdn}
