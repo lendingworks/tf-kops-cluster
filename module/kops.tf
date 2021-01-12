@@ -11,9 +11,16 @@ resource "null_resource" "create_cluster" {
     command = "KOPS_FEATURE_FLAGS=SpecOverrideFlag AWS_PROFILE=${var.aws_profile} kops create cluster --cloud=aws --dns ${var.kops_dns_mode} --authorization RBAC --networking ${var.kubernetes_networking} --zones=${join(",", data.aws_availability_zones.available.names)} --node-count=${var.node_asg_desired} --master-zones=${local.master_azs} --target=terraform --api-loadbalancer-type=public --vpc=${var.vpc_id} --state=s3://${var.kops_s3_bucket_id} --kubernetes-version ${var.kubernetes_version} --override='cluster.spec.etcdClusters[*].version=${local.etcd_version}' ${local.cluster_fqdn}"
   }
 
+  triggers = {
+    aws_profile       = var.aws_profile
+    kops_s3_bucket_id = var.kops_s3_bucket_id
+    cluster_fqdn      = local.cluster_fqdn
+  }
+
   provisioner "local-exec" {
-    when    = destroy
-    command = "AWS_PROFILE=${var.aws_profile} kops delete cluster --yes --state=s3://${var.kops_s3_bucket_id} --unregister ${local.cluster_fqdn}"
+    when = destroy
+    #command = "AWS_PROFILE=${var.aws_profile} kops delete cluster --yes --state=s3://${var.kops_s3_bucket_id} --unregister ${local.cluster_fqdn}"
+    command = "AWS_PROFILE=${self.triggers.aws_profile} kops delete cluster --yes --state=s3://${self.triggers.kops_s3_bucket_id} --unregister ${self.triggers.cluster_fqdn}"
   }
 }
 
