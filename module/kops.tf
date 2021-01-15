@@ -12,7 +12,6 @@ resource "null_resource" "create_cluster" {
   }
 
   # Not supported by the latest version of Terraform
-  # https://lendingworks.atlassian.net/browse/LW-9520
   # provisioner "local-exec" {
   #   when = destroy
   #   command = "AWS_PROFILE=${var.aws_profile} kops delete cluster --yes --state=s3://${var.kops_s3_bucket_id} --unregister ${local.cluster_fqdn}"
